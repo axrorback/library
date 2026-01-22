@@ -1,0 +1,1 @@
+from accounts.tasks.mail_task import mail_task
