@@ -1,0 +1,17 @@
+# IDE sozlamalari
+.idea/
+.vscode/
+
+.env
+
+__pycache__/
+*.py[cod]
+
+**/migrations/*
+
+!**/migrations/__init__.py
+
+*.sqlite3
+
+media/
+staticfiles/
