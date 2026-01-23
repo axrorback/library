@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Mening profilim</h2>
+
+    <div>
+        {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" width="150" style="border-radius: 50%;">
+        {% endif %}
+
+        <p><strong>Username:</strong> {{ profile.user.username }}</p>
+        <p><strong>Ism:</strong> {{ profile.first_name|default:"Kiritilmagan" }}</p>
+        <p><strong>Familiya:</strong> {{ profile.last_name|default:"Kiritilmagan" }}</p>
+        <p><strong>Telefon:</strong> {{ profile.phone_number|default:"Kiritilmagan" }}</p>
+
+        <p><strong>Telegram ID:</strong>
+            {% if profile.telegram_id %}
+                {{ profile.telegram_id }} ✅ (Tasdiqlangan)
+            {% else %}
+                Kiritilmagan. <a href="#">Tasdiqlash uchun bosing</a>
+            {% endif %}
+        </p>
+
+        <p><strong>Bio:</strong> {{ profile.bio }}</p>
+        <p><strong>Tug'ilgan sana:</strong> {{ profile.birth_date }}</p>
+
+        <a href="{% url 'profile_edit' %}">Tahrirlash</a>
+    </div>
+{% endblock %}
