@@ -5,6 +5,9 @@ from django.core.validators import RegexValidator
 from PIL import Image
 from django.utils import timezone
 from datetime import timedelta
+from accounts.utils import generate_token
+import os
+
 
 def user_avatar_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -17,6 +20,8 @@ telegram_id_validator = RegexValidator(regex=r'^\d{5,15}$',message="Telegram ID 
 gmail_validator = RegexValidator(regex=r'^[a-zA-Z0-9._%+-]+@gmail\.com$',message="Faqat @gmail.com manzillari qabul qilinadi.")
 
 class CustomUser(AbstractUser):
+    first_name = None
+    last_name = None
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     username = models.CharField(max_length=20, unique=True, validators=[username_regex])
     email = models.EmailField(unique=True, validators=[gmail_validator])
@@ -26,23 +31,45 @@ class CustomUser(AbstractUser):
 
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=30, blank=True,null=True)
+    last_name = models.CharField(max_length=30, blank=True,null=True)
     telegram_id = models.CharField(max_length=15, validators=[telegram_id_validator], blank=True)
     phone_number = models.CharField(max_length=15, validators=[phone_regex], blank=True)
     bio = models.TextField(blank=True)
+    birth_date = models.DateField(blank=True, null=True)
     avatar = models.ImageField(upload_to=user_avatar_path, blank=True,null=True,default='avatars/default.png')
 
     def save(self, *args, **kwargs):
+        avatar_changed = False
+
+        if self.pk:
+            try:
+                old_profile = Profile.objects.get(pk=self.pk)
+                if old_profile.avatar != self.avatar:
+                    avatar_changed = True
+                    if old_profile.avatar and old_profile.avatar.name != 'avatars/default.png':
+                        if os.path.isfile(old_profile.avatar.path):
+                            os.remove(old_profile.avatar.path)
+            except Profile.DoesNotExist:
+                avatar_changed = True
+        else:
+            avatar_changed = True
+
         super().save(*args, **kwargs)
-        if self.avatar:
-            img = Image.open(self.avatar.path)
-            if img.height > 300 or img.width > 300:
-                output_size = (300, 300)
-                img.thumbnail(output_size)
-                img.save(self.avatar.path)
+
+        if avatar_changed and self.avatar:
+            if self.avatar.name != 'avatars/default.png':
+                try:
+                    img = Image.open(self.avatar.path)
+                    if img.height > 300 or img.width > 300:
+                        output_size = (300, 300)
+                        img.thumbnail(output_size)
+                        img.save(self.avatar.path)
+                except Exception as e:
+                    print(f"Rasmga ishlov berishda xato: {e}")
 
     def __str__(self):
         return self.user.username
-
 
 class OTP(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="otp")
@@ -59,3 +86,18 @@ class OTP(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.code}"
+
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    token = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_used = models.BooleanField(default=False)
+
+    def is_valid(self):
+        return not self.is_used and timezone.now() < self.created_at + timedelta(minutes=10)
+
+    def save(self, *args, **kwargs):
+        if not self.token:
+            self.token = generate_token()
+        super().save(*args, **kwargs)
