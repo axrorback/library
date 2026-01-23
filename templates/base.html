@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Digital Lib{% endblock %}</title>
+    <style>
+        .messages { list-style: none; padding: 0; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Bosh sahifa</a> |
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile_view' %}">Profil</a>
+            <form action="{% url 'logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Tizimdan chiqish</button>
+            </form>
+        {% else %}
+            <a href="{% url 'register' %}">Ro'yxatdan o'tish</a>
+        {% endif %}
+    </nav>
+
+    <hr>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <hr>
+    <footer>
+        <p>&copy; 2026 Digital Library</p>
+    </footer>
+</body>
+</html>
