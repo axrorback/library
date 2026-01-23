@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Emailni tasdiqlash{% endblock %}
+
+{% block content %}
+    <div style="max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <h2>Tasdiqlash</h2>
+
+        <p>Kod yuborilgan manzil: <strong>{{ request.session.user_email }}</strong></p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <div style="margin-bottom: 15px;">
+                <input type="text" name="otp_code" placeholder="6 xonali kod"
+                       maxlength="6" style="width: 100%; padding: 10px;" required autofocus>
+            </div>
+            <button type="submit" style="width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Tasdiqlash
+            </button>
+        </form>
+
+        <div id="resend-container" style="margin-top: 20px; font-size: 0.9em;">
+            <p id="timer-text">Kodni qayta yuborish mumkin: <span id="timer">60</span>s</p>
+            <a href="{% url 'resend_otp' %}" id="resend-link" style="display: none; color: #007bff; text-decoration: none;">
+                🔄 Kodni qayta yuborish
+            </a>
+
+            <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+
+            <p style="color: #666;">
+                Email xatomi? <a href="{% url 'change_email' %}" style="color: #dc3545; font-weight: bold;">O'zgartirish</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Taymer mantiqi
+        let timeLeft = 60;
+        let timerElement = document.getElementById('timer');
+        let resendLink = document.getElementById('resend-link');
+        let timerText = document.getElementById('timer-text');
+
+        let countdown = setInterval(function() {
+            timeLeft--;
+            if (timeLeft > 0) {
+                timerElement.innerText = timeLeft;
+            } else {
+                clearInterval(countdown);
+                timerText.style.display = 'none';
+                resendLink.style.display = 'block';
+            }
+        }, 1000);
+    </script>
+{% endblock %}

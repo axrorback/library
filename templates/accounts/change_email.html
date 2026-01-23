@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Emailni o'zgartirish</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="email" name="email" value="{{ user.email }}" required>
+        <button type="submit">Emailni yangilash va kodni qayta yuborish</button>
+    </form>
+    <br>
+    <a href="{% url 'verify_otp' %}">Orqaga qaytish</a>
+{% endblock %}
