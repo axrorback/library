@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load socialaccount %}
 {% block title %}Kirish{% endblock %}
 
 {% block content %}
@@ -9,6 +9,8 @@
         {{ form.as_p }}
         <button type="submit">Kirish</button>
     </form>
+    <p>Google bilan kirish <a href="{% provider_login_url 'google' %}">Google bilan kir</a></p>
+    <p>Github bilan kir <a href="{% provider_login_url 'github' %}">Github bilan kir</a></p>
     <p>Akkauntingiz yo'qmi? <a href="{% url 'register' %}">Ro'yxatdan o'tish</a></p>
     <p>Parolni unutdingizmi? <a href="{% url 'forgot_password' %}" >Tiklash</a></p>
 {% endblock %}
