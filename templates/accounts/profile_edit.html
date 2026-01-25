@@ -61,7 +61,16 @@
             </a>
         </div>
     </form>
-    <p>Xavfsizlik: <a href="{% url 'change_password' %}">Parolni o'zgartirish</a></p>
+    <p>
+  Xavfsizlik:
+  <a href="{% url 'change_password' %}">
+    {% if request.user.has_usable_password %}
+      Parolni o'zgartirish
+    {% else %}
+      Parol o'rnatish
+    {% endif %}
+  </a>
+</p>
 </div>
 
 <style>
