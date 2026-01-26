@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Donate{% endblock %}
+
+{% block content %}
+  <h1>Donate</h1>
+  <p>Kitoblarimizni rivojlantirishga hissa qo‘shing.</p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+
+    <div>
+      <label for="id_amount">Miqdor (so‘m)</label>
+      <input
+        id="id_amount"
+        name="amount"
+        type="number"
+        inputmode="numeric"
+        min="1000"
+        step="1000"
+        placeholder="Masalan: 50000"
+        value="{{ form.amount.value|default_if_none:'' }}"
+        required
+      />
+      <small>Minimal: 1,000 so‘m.</small>
+
+      {% if form.amount.errors %}
+        <div>
+          {% for e in form.amount.errors %}
+            <div>{{ e }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+    {% if form.non_field_errors %}
+      <div>
+        {% for e in form.non_field_errors %}
+          <div>{{ e }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div>
+      <button type="submit">TsPay orqali donate qilish</button>
+      <a href="/">Orqaga</a>
+    </div>
+  </form>
+
+  <hr>
+
+  <h2>Top donatorlar</h2>
+  <p>Eng ko‘p donate qilgan foydalanuvchilar (Top 10)</p>
+
+  {% if top_donators %}
+    <ol>
+      {% for d in top_donators %}
+        <li>
+          <strong>{{ d.user__username }}</strong>
+          — {{ d.total|intcomma }} so‘m
+        </li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p>Hozircha donatorlar yo‘q. Birinchi bo‘ling.</p>
+  {% endif %}
+
+  <p><small>Donatorlar reytingi faqat muvaffaqiyatli (paid) tranzaksiyalar bo‘yicha hisoblanadi.</small></p>
+{% endblock %}

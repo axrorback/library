@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Thank you{% endblock %}
+
+{% block content %}
+  <h1>Rahmat, {{ donator.username }}!</h1>
+
+  {% if donation %}
+    <p>
+      Siz <strong>{{ donation.amount|intcomma }} so‘m</strong> donate qildingiz.
+    </p>
+    {% if donation.paid_at %}
+      <p>
+        To‘lov vaqti: {{ donation.paid_at }}
+      </p>
+    {% endif %}
+    <p>
+      Holat: <strong>{{ donation.status }}</strong>
+    </p>
+  {% else %}
+    <p>Rahmat! Hozircha tasdiqlangan donation topilmadi (ehtimol to‘lov hali tekshirilmoqda).</p>
+  {% endif %}
+
+  <p>
+    <a href="{% url 'donate' %}">Yana donate qilish</a>
+    |
+    <a href="/">Bosh sahifa</a>
+  </p>
+{% endblock %}

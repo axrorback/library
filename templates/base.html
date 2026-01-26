@@ -15,6 +15,7 @@
         <a href="/">Bosh sahifa</a> |
         {% if user.is_authenticated %}
             <a href="{% url 'profile_view' %}">Profil</a>
+            <a href="{% url 'donate' %}">Donate qilish</a>
             <form action="{% url 'logout' %}" method="post">
                 {% csrf_token %}
                 <button type="submit">Tizimdan chiqish</button>
