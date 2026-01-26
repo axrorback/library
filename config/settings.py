@@ -9,8 +9,15 @@ SECRET_KEY = os.getenv('DJANGO_SECRET')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    ".ngrok-free.app",
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://43048a2c02b2.ngrok-free.app",
+]
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -18,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'accounts',
     'analytics',
     'billing',
@@ -121,8 +129,8 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 
 
-CELERY_BROKER_URL = 'redis://192.168.1.14:6379/0'
-CELERY_RESULT_BACKEND = 'redis://192.168.1.14:6379/0'
+CELERY_BROKER_URL = 'redis://10.233.147.26:6379/0'
+CELERY_RESULT_BACKEND = 'redis://10.233.147.26:6379/0'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -161,3 +169,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
+TSPAY_SHOP_ACCESS_TOKEN = os.environ.get("TSPAY_SHOP_ACCESS_TOKEN", "")
+TSPAY_CALLBACK_URL = os.environ.get("TSPAY_CALLBACK_URL", "https://yourwebsite.com/payment/callback")
