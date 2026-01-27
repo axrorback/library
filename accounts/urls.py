@@ -13,5 +13,10 @@ urlpatterns = [
     path('profile/', profile_view, name='profile_view'),
     path('profile-edit/', profile_edit, name='profile_edit'),
     path('change-password/', change_password, name='change_password'),
+    path('telegram-code/', enter_telegram_id, name='telegram_code'),
+    path('telegram-send/', send_telegram_code, name='send_telegram_code'), # bu formda kera bolgan manga tegilmasin umuman @axrorback
+    path('verify-telegram/', verify_telegram, name='verify_telegram'),
+    path('disconnect-telegram/', disconnect_telegram, name='disconnect_telegram'), #telegramni uzishga kerak bu (Night actions bu AI emas!)
+
 
 ]
