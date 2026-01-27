@@ -13,13 +13,22 @@
         <p><strong>Familiya:</strong> {{ profile.last_name|default:"Kiritilmagan" }}</p>
         <p><strong>Telefon:</strong> {{ profile.phone_number|default:"Kiritilmagan" }}</p>
 
-        <p><strong>Telegram ID:</strong>
-            {% if profile.telegram_id %}
-                {{ profile.telegram_id }} ✅ (Tasdiqlangan)
-            {% else %}
-                Kiritilmagan. <a href="#">Tasdiqlash uchun bosing</a>
-            {% endif %}
-        </p>
+            <p><strong>Telegram ID:</strong>
+              {% if profile.telegram_id %}
+              {{ profile.telegram_id }} (Tasdiqlangan)
+
+              <form action="{% url 'disconnect_telegram' %}" method="POST" style="display:inline; margin-left: 10px;">
+                 {% csrf_token %}
+                    <button type="submit" onclick="return confirm('Telegramni uzmoqchimisiz?')"
+                    style="color: #dc3545; border: 1px solid #dc3545; background: none; border-radius: 4px; cursor: pointer; font-size: 12px; padding: 2px 5px;">
+                     O'chirish
+                  </button>
+                </form>
+
+                {% else %}
+               Kiritilmagan. <a href="{% url 'telegram_code' %}">Tasdiqlash uchun bosing</a>
+              {% endif %}
+            </p>
 
         <p><strong>Bio:</strong> {{ profile.bio }}</p>
         <p><strong>Tug'ilgan sana:</strong> {{ profile.birth_date }}</p>
