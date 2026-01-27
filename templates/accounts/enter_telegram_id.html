@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Telegram ID bog'lash</h2>
+    <p>Avval botimizga (@SizningBot) /start buyrug'ini yuboring va ID-ingizni oling.</p>
+    
+    <form action="{% url 'send_telegram_code' %}" method="POST">
+        {% csrf_token %}
+        <input type="number" name="telegram_id" placeholder="Telegram ID kiriting" required>
+        <button type="submit">Kod yuborish</button>
+    </form>
+{% endblock %}

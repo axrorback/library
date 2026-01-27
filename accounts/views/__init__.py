@@ -7,6 +7,7 @@ from accounts.views.VerifyForgot import reset_password_confirm
 from accounts.views.Profile import profile_view
 from accounts.views.ProfileEdit import profile_edit
 from accounts.views.ChangePassword import change_password
-from accounts.views.ChangePassword import change_password
 from accounts.views.OTPTelegram import send_telegram_code
+from accounts.views.VerifyTelegram import verify_telegram
+from accounts.views.EnterTelegramID import enter_telegram_id
 from accounts.views.DisconnectTelegram import disconnect_telegram
