@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Telegramni tasdiqlash</h2>
+    
+    <p>Botimiz tomonidan yuborilgan 6 xonali kodni kiriting:</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <input type="text" name="code" placeholder="000000" maxlength="6" required autofocus>
+        </div>
+        <br>
+        <button type="submit" id="verify-btn">Tasdiqlash</button>
+    </form>
+
+    <div style="margin-top: 15px;">
+        <span id="timer-label">Kodni kiritish muddati:</span>
+        <span id="timer-display" style="font-weight: bold;">02:00</span>
+    </div>
+
+    <div id="resend-box" style="display: none; margin-top: 10px;">
+        <p>Vaqt tugadi!</p>
+        <a href="{% url 'profile_edit' %}">Kodni qayta yuborish (Profilga qaytish)</a>
+    </div>
+
+    <script>
+        // Django'dan kelgan unix timestamp (soniyalarda)
+        const expireAt = {{ expire_at|default:0 }}; 
+        const timerDisplay = document.getElementById('timer-display');
+        const verifyBtn = document.getElementById('verify-btn');
+        const resendBox = document.getElementById('resend-box');
+
+        function updateCountdown() {
+            const now = Math.floor(Date.now() / 1000);
+            const remaining = Math.max(0, Math.floor(expireAt - now));
+
+            const minutes = Math.floor(remaining / 60);
+            const seconds = remaining % 60;
+
+            // 00:00 formatida chiqarish
+            timerDisplay.innerText = 
+                (minutes < 10 ? "0" : "") + minutes + ":" + 
+                (seconds < 10 ? "0" : "") + seconds;
+
+            if (remaining <= 0) {
+                verifyBtn.disabled = true;
+                resendBox.style.display = "block";
+                document.getElementById('timer-label').style.display = "none";
+                timerDisplay.style.display = "none";
+            } else {
+                setTimeout(updateCountdown, 1000);
+            }
+        }
+
+        if (expireAt > 0) {
+            updateCountdown();
+        }
+    </script>
+{% endblock %}
