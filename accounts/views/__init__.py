@@ -9,3 +9,4 @@ from accounts.views.ProfileEdit import profile_edit
 from accounts.views.ChangePassword import change_password
 from accounts.views.ChangePassword import change_password
 from accounts.views.OTPTelegram import send_telegram_code
+from accounts.views.DisconnectTelegram import disconnect_telegram
