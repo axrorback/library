@@ -3,7 +3,7 @@ from accounts.views import *
 from django.contrib.auth.views import LoginView , LogoutView
 urlpatterns = [
     path('register/', register , name='register'),
-    path('login/',LoginView.as_view(template_name='accounts/login.html',),name='login'),
+    path('login/',LoginView.as_view(template_name='accounts/login.html'),name='login'),
     path('logout/',LogoutView.as_view(),name='logout'),
     path('verify-otp/', verify_otp , name='verify_otp'),
     path('resend-otp/', resend_otp , name='resend_otp'),
