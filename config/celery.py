@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from celery import Celery
 import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.lokal')
 
 app = Celery('config')
 app.config_from_object('django.conf:settings', namespace='CELERY')
