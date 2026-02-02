@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from library.models import Book , Category , Language
+from library.models import Book , Category , Language , BookPurchase
 
 
 @admin.register(Book)
@@ -16,3 +16,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Language)
 class LanguageAdmin(admin.ModelAdmin):
     list_display = ['name','code','is_active']
+
+@admin.register(BookPurchase)
+class BookPurchaseAdmin(admin.ModelAdmin):
+    list_display = ['user','book','status']
