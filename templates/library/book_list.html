@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<h2>{{ category.name }} bo‘limidagi kitoblar</h2>
+
+<ul>
+  {% for b in books %}
+    <li>
+      <a href="{% url 'book_detail' category.slug b.slug %}">
+        {{ b.title }}
+      </a>
+    </li>
+  {% empty %}
+    <li>Bu bo‘limda kitob yo‘q</li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'category_list' %}">Bo‘limlarga qaytish</a>
+{% endblock %}
