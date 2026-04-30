@@ -83,7 +83,7 @@ def payment_callback(request):
     order_id = str(data.get("order_id"))
     status = data.get("status")
 
-    donation = Donation.objects.filter(order_id=order_id).first()
+    donation = Donation.objects.filter(cheque_id=order_id).first()
 
     if not donation:
         return JsonResponse({"error": "not found"}, status=404)
