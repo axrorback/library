@@ -1,5 +1,13 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from .models import Profile
+from allauth.account.adapter import DefaultAccountAdapter
+import uuid
+
+
+class MyAccountAdapter(DefaultAccountAdapter):
+    def generate_unique_username(self, txts, regex=None):
+        return f"user_{uuid.uuid4().hex[:5]}"
+
 
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     def save_user(self, request, sociallogin, form=None):

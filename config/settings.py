@@ -9,13 +9,12 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1","localhost","library.coderboys.dev",'9559-2a05-45c2-65b5-dc00-5f2-730f-160d-3bd2.ngrok-free.app']
+ALLOWED_HOSTS = ["127.0.0.1","localhost","library.coderboys.dev",]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://library.coderboys.dev",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
-    'https://9559-2a05-45c2-65b5-dc00-5f2-730f-160d-3bd2.ngrok-free.app',
 ]
 
 INSTALLED_APPS = [
@@ -156,6 +155,8 @@ AUTHENTICATION_BACKENDS = [
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 SOCIALACCOUNT_ADAPTER = 'accounts.adapters.MySocialAccountAdapter'
+ACCOUNT_ADAPTER = 'accounts.adapters.MyAccountAdapter'
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Tashkent'
