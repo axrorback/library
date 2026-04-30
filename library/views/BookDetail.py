@@ -1,22 +1,32 @@
-# library/views.py
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.views.generic import DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from library.models import Book, Category, BookPurchase
 
+class BookDetailView(LoginRequiredMixin, DetailView):
+    model = Book
+    template_name = "library/book_detail.html"
+    context_object_name = 'book'
+    slug_url_kwarg = 'book_slug'
 
-@login_required
-def book_detail(request, category_slug, book_slug):
-    category = get_object_or_404(Category, slug=category_slug, is_active=True)
-    book = get_object_or_404(Book, slug=book_slug, is_active=True, categories=category)
+    def get_queryset(self):
+        return Book.objects.filter(
+            is_active=True, 
+            categories__slug=self.kwargs['category_slug']
+        ).distinct()
 
-    has_access = book.is_free
-    if request.user.is_authenticated and not has_access:
-        has_access = BookPurchase.objects.filter(
-            user=request.user, book=book, status=BookPurchase.Status.PAID
-        ).exists()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book = self.get_object()
+        user = self.request.user
 
-    return render(request, "library/book_detail.html", {
-        "category": category,
-        "book": book,
-        "has_access": has_access,
-    })
+        has_access = book.is_free
+        if not has_access and user.is_authenticated:
+            has_access = BookPurchase.objects.filter(
+                user=user, 
+                book=book, 
+                status=BookPurchase.Status.PAID
+            ).exists()
+
+        context['category'] = book.categories.filter(slug=self.kwargs['category_slug']).first()
+        context['has_access'] = has_access
+        return context

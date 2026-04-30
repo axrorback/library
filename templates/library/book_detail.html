@@ -1,62 +1,318 @@
-{% extends "base.html" %}
-{% block title %}{{ book.title }}{% endblock %}
+{% extends 'base.html' %}
+
+{% block title %}{{ book.title }} | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Kitob Sahifasi Maxsus Stili */
+    .book-wrapper {
+        margin-top: 30px;
+        padding-bottom: 50px;
+    }
+
+    /* Muqova dizayni - Desktopda qotib turadi (Sticky) */
+    .cover-container {
+        position: sticky;
+        top: 20px;
+        z-index: 10;
+    }
+
+    .book-cover {
+        width: 100%;
+        aspect-ratio: 2 / 3;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid var(--border);
+    }
+
+    /* Kitob jildi (spine) effekti */
+    .cover-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .cover-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 15px;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0) 100%);
+        z-index: 2;
+        border-radius: 12px 0 0 12px;
+    }
+
+    .book-cover:hover {
+        transform: scale(1.03) rotate(-1deg);
+    }
+
+    .no-cover {
+        aspect-ratio: 2/3;
+        background: linear-gradient(135deg, #f6f8fa 0%, #e1e4e8 100%);
+        border: 2px dashed var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        color: #8b949e;
+    }
+
+    /* Ma'lumotlar qismi */
+    .terminal-breadcrumb {
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        margin-bottom: 15px;
+        color: var(--primary);
+    }
+
+    .book-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1a1d21;
+        line-height: 1.2;
+        margin-bottom: 10px;
+        letter-spacing: -1px;
+    }
+
+    .author-name {
+        font-size: 1.2rem;
+        color: #57606a;
+        margin-bottom: 30px;
+        font-family: var(--font-mono);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* Spec Grid */
+    .spec-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 15px;
+        margin-bottom: 35px;
+    }
+
+    .spec-item {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        padding: 15px;
+        border-radius: 12px;
+        transition: 0.2s;
+    }
+
+    .spec-item:hover {
+        border-color: var(--accent);
+        background: #fcfcfc;
+    }
+
+    .spec-label {
+        display: block;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #8b949e;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .spec-value {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--text);
+        font-family: var(--font-mono);
+    }
+
+    /* CKEditor Content Styling */
+    .description-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+
+    .description-text {
+        line-height: 1.8;
+        color: #24292f;
+        font-size: 1.05rem;
+    }
+
+    .description-text img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 15px 0;
+    }
+
+    .description-text h1, .description-text h2, .description-text h3 {
+        margin-top: 25px;
+        font-weight: 700;
+    }
+
+    /* Payment Card */
+    .payment-card {
+        background: #fff8eb;
+        border: 1px solid rgba(212, 167, 44, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 25px;
+    }
+
+    .price-tag {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: #9a6700;
+        margin: 10px 0;
+        font-family: var(--font-mono);
+    }
+
+    /* Buttons */
+    .btn-action-main {
+        background: var(--accent);
+        color: white !important;
+        padding: 14px 30px;
+        border-radius: 8px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+        border: none;
+        text-decoration: none;
+    }
+
+    .btn-action-main:hover {
+        filter: brightness(1.1);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(9, 105, 218, 0.3);
+    }
+
+    .btn-secondary-outline {
+        border: 1px solid var(--border);
+        background: white;
+        color: var(--text);
+        padding: 14px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .btn-secondary-outline:hover {
+        background: #f6f8fa;
+        border-color: #8b949e;
+    }
+
+    @media (max-width: 768px) {
+        .cover-container { position: static; text-align: center; margin-bottom: 30px; }
+        .book-title { font-size: 1.8rem; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<article>
-    <h2>{{ book.title }}</h2>
+<div class="container-fluid book-wrapper">
+    <div class="row g-5">
 
-    <p><b>Muallif:</b> {{ book.author }}</p>
+        <!-- Chap tomonda: Muqova va Xarid -->
+        <div class="col-lg-4 col-md-5">
+            <div class="cover-container">
+                <div class="cover-wrapper">
+                    {% if book.cover %}
+                        <img src="{{ book.cover.url }}" class="book-cover shadow-lg" alt="{{ book.title }}">
+                    {% else %}
+                        <div class="no-cover shadow-sm">
+                            <i class="bi bi-journal-x fs-1 mb-2"></i>
+                            <span class="small fw-bold">MUQOVA YO'Q</span>
+                        </div>
+                    {% endif %}
+                </div>
 
-    <p><b>Joriy bo‘lim:</b>
-        <a href="{% url 'book_list_by_category' category.slug %}">
-            {{ category.name }}
-        </a>
-    </p>
+                {% if not has_access and book.price > 0 %}
+                    <div class="payment-card shadow-sm">
+                        <div class="d-flex align-items-center gap-2 text-warning mb-2">
+                            <i class="bi bi-shield-lock-fill"></i>
+                            <span class="fw-bold small text-uppercase">Pullik material</span>
+                        </div>
+                        <p class="small text-muted mb-0">To'liq foydalanish uchun:</p>
+                        <div class="price-tag">{{ book.price }} so'm</div>
+                        <a href="{% url 'create_book_payment' book.id %}" class="btn-action-main w-100 justify-content-center">
+                            <i class="bi bi-cart-plus"></i> Xarid qilish
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
 
-    <hr>
+        <!-- O'ng tomonda: Kontent -->
+        <div class="col-lg-8 col-md-7">
+            <!-- Terminal Breadcrumb -->
+            <div class="terminal-breadcrumb">
+                <i class="bi bi-terminal-fill"></i> ~/lib/{{ category.slug }}/<span class="text-dark">{{ book.slug }}</span>
+            </div>
 
-    <div class="description">
-        <h4>Tavsif:</h4>
-        <p>{{ book.description|linebreaks }}</p>
-    </div>
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb small">
+                    <li class="breadcrumb-item"><a href="{% url 'category_list' %}" class="text-decoration-none">Bo'limlar</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'book_list_by_category' category.slug %}" class="text-decoration-none">{{ category.name }}</a></li>
+                    <li class="breadcrumb-item active">{{ book.title|truncatechars:30 }}</li>
+                </ol>
+            </nav>
 
-    <div class="book-info">
-        <h4>Ma'lumotlar:</h4>
-
-        {% if book.cover %}
-            <p><b>Muqova:</b><br>
-            <img src="{{ book.cover.url }}" width="150" style="border-radius: 5px;"></p>
-        {% endif %}
-
-        <p><b>Nashr yili:</b> {{ book.publication_year|default:"Noma'lum" }}</p>
-        <p><b>Sahifalar soni:</b> {{ book.pages|default:"—" }}</p>
-        <p><b>Fayl hajmi:</b> {{ book.file_size|filesizeformat }}</p>
-
-        {% if has_access %}
-            <p>
-                <b>Fileni ochish:</b>
-                <a href="{{ book.file.url }}">Ochish/Yuklab olish</a>
+            <h1 class="book-title">{{ book.title }}</h1>
+            <p class="author-name">
+                <i class="bi bi-person-badge text-primary"></i> {{ book.author }}
             </p>
-        {% else %}
-            <p><b>Bu kitob pullik.</b></p>
 
-            {% if book.price %}
-                <p><b>Narxi:</b> {{ book.price }}</p>
-            {% endif %}
+            <!-- Specs Grid -->
+            <div class="spec-grid">
+                <div class="spec-item shadow-sm">
+                    <span class="spec-label">Nashr yili</span>
+                    <span class="spec-value">{{ book.publication_year|default:"Noma'lum" }}</span>
+                </div>
+                <div class="spec-item shadow-sm">
+                    <span class="spec-label">Sahifa soni</span>
+                    <span class="spec-value">{{ book.pages|default:"—" }} bet</span>
+                </div>
+                <div class="spec-item shadow-sm">
+                    <span class="spec-label">Fayl hajmi</span>
+                    <span class="spec-value">{{ book.file_size|filesizeformat }}</span>
+                </div>
+            </div>
 
-            {% if user.is_authenticated %}
-                <a class="btn" href="{% url 'create_book_payment' book.id %}">
-                    To‘lash va yuklab olish
+            <!-- Tavsif (CKEditor moslangan) -->
+            <div class="description-card shadow-sm">
+                <h5 class="fw-bold mb-4 d-flex align-items-center gap-2">
+                    <i class="bi bi-card-text text-accent"></i> Kitob tavsifi
+                </h5>
+                <div class="description-text">
+                    {% if book.description %}
+                        {{ book.description|safe }}
+                    {% else %}
+                        <p class="text-muted italic">Ushbu kitob haqida ma'lumot kiritilmagan.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                {% if has_access or book.price == 0 %}
+                    <a href="{{ book.file.url }}" class="btn-action-main">
+                        <i class="bi bi-book-half"></i> Mutolaani boshlash
+                    </a>
+                {% endif %}
+
+                <a href="{% url 'book_list_by_category' category.slug %}" class="btn-secondary-outline">
+                    <i class="bi bi-arrow-left"></i> Orqaga qaytish
                 </a>
-            {% else %}
-                <a class="btn" href="{% url 'login' %}?next={{ request.path }}">
-                    Kirish qiling
-                </a>
-            {% endif %}
-        {% endif %}
+            </div>
+        </div>
+
     </div>
-
-    <br>
-    <a href="{% url 'book_list_by_category' category.slug %}" class="btn">Orqaga qaytish</a>
-</article>
+</div>
 {% endblock %}

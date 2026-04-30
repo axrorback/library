@@ -9,11 +9,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    ".ngrok-free.app",
-]
+ALLOWED_HOSTS = ["127.0.0.1","localhost",".ngrok-free.app",]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://43048a2c02b2.ngrok-free.app",
