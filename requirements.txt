@@ -17,7 +17,6 @@ click-repl==0.3.0
 cryptography==47.0.0
 Django==6.0.1
 django-allauth==65.16.1
-django-axes==8.1.0
 django-ckeditor-5==0.2.20
 django-storages==1.14.6
 dotenv==0.9.9
