@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'downloads',
     'library',
     'notification',
-    'axes',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -45,7 +44,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'axes.middleware.AxesMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -70,9 +68,6 @@ TEMPLATES = [
         },
     },
 ]
-AXES_LOGIN_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 2
-
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
