@@ -1,70 +1,242 @@
-{% extends "base.html" %}
-{% load humanize %}
+{% extends 'base.html' %}
 
-{% block title %}Donate{% endblock %}
+{% block title %}Kutubxonani qo'llab-quvvatlash | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    .donate-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 50px 20px;
+        min-height: 80vh;
+    }
+
+    .donate-card {
+        background: #ffffff;
+        max-width: 480px;
+        width: 100%;
+        padding: 40px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .terminal-header {
+        font-family: var(--font-mono);
+        color: var(--primary);
+        font-size: 0.85rem;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .title-main {
+        font-size: 1.75rem;
+        font-weight: 800;
+        text-align: center;
+        color: var(--text);
+        margin-bottom: 10px;
+        letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #57606a;
+        font-size: 0.95rem;
+        margin-bottom: 35px;
+        line-height: 1.5;
+    }
+
+    /* Form dizayni */
+    .donate-form {
+        margin-bottom: 40px;
+    }
+
+    .input-wrapper {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+        padding: 14px 18px;
+        background: #f6f8fa;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-family: var(--font-mono);
+        font-weight: 600;
+        outline: none;
+        transition: all 0.2s;
+    }
+
+    .input-wrapper input:focus {
+        border-color: var(--accent);
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+    }
+
+    .currency-label {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #8b949e;
+        font-weight: 600;
+        font-family: var(--font-mono);
+    }
+
+    .btn-donate {
+        width: 100%;
+        background-color: var(--accent);
+        color: white;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-donate:hover {
+        filter: brightness(1.1);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(9, 105, 218, 0.3);
+    }
+
+    .total-badge {
+        background: #f0f7ff;
+        border: 1px dashed rgba(9, 105, 218, 0.3);
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .total-badge span {
+        display: block;
+        font-size: 0.8rem;
+        color: #57606a;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+    }
+
+    .total-badge strong {
+        font-size: 1.5rem;
+        color: var(--accent);
+        font-family: var(--font-mono);
+    }
+
+    /* Top Donators List */
+    .donators-section h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .donators-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .donator-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .donator-item:last-child { border: none; }
+
+    .donator-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .donator-amount {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: #1a7f37;
+        font-size: 0.9rem;
+    }
+
+    .alert-error {
+        background: #fff1f0;
+        border: 1px solid #ffa39e;
+        color: #cf1322;
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-  <h1>Donate</h1>
-  <p>Kitoblarimizni rivojlantirishga hissa qo‘shing.</p>
-
-  <form method="post" novalidate>
-    {% csrf_token %}
-
-    <div>
-      <label for="id_amount">Miqdor (so‘m)</label>
-      <input
-        id="id_amount"
-        name="amount"
-        type="number"
-        inputmode="numeric"
-        min="1000"
-        step="1000"
-        placeholder="Masalan: 50000"
-        value="{{ form.amount.value|default_if_none:'' }}"
-        required
-      />
-      <small>Minimal: 1,000 so‘m.</small>
-
-      {% if form.amount.errors %}
-        <div>
-          {% for e in form.amount.errors %}
-            <div>{{ e }}</div>
-          {% endfor %}
+<div class="donate-wrapper">
+    <div class="donate-card">
+        <div class="terminal-header">
+            <i class="bi bi-heart-fill"></i> sudo support --lib-system
         </div>
-      {% endif %}
+
+        <h1 class="title-main">Hissa qo‘shing</h1>
+        <p class="subtitle">Sizning yordamingiz kutubxonamizdagi resurslarni ko'paytirish va server harajatlarini qoplashga yordam beradi.</p>
+
+        {% if messages %}
+            {% for m in messages %}
+                <div class="alert-error">
+                    <i class="bi bi-exclamation-circle-fill"></i> {{ m }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="donate-form">
+            {% csrf_token %}
+            <div class="input-wrapper">
+                <input type="number" name="amount" min="1000" step="500" placeholder="Summani kiriting..." required>
+                <span class="currency-label">so'm</span>
+            </div>
+            <button type="submit" class="btn-donate">
+                <i class="bi bi-rocket-takeoff-fill"></i> Hissa qo‘shish (Donate)
+            </button>
+        </form>
+        <div class="total-badge">
+            <span><i class="bi bi-graph-up-arrow"></i> Jami yig‘ilgan summa:</span>
+            <strong>{{ total_amount|default:"0" }} so‘m</strong>
+        </div>
+
+        <div class="donators-section">
+            <h3><i class="bi bi-trophy text-warning"></i> Top donatorlar</h3>
+            <ul class="donators-list">
+                {% for d in top_donators %}
+                    <li class="donator-item">
+                        <span class="donator-name">
+                            <i class="bi bi-person-circle text-muted"></i> {{ d.user__username }}
+                        </span>
+                        <span class="donator-amount">+{{ d.total }} so‘m</span>
+                    </li>
+                {% empty %}
+                    <li class="text-center py-3 text-muted small">
+                        Hali hech kim hissa qo'shmagan. Birinchi bo'ling!
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
-
-    {% if form.non_field_errors %}
-      <div>
-        {% for e in form.non_field_errors %}
-          <div>{{ e }}</div>
-        {% endfor %}
-      </div>
-    {% endif %}
-
-    <div>
-      <button type="submit">TsPay orqali donate qilish</button>
-      <a href="/">Orqaga</a>
-    </div>
-  </form>
-
-  <hr>
-
-  <h2>Top donatorlar</h2>
-  <p>Eng ko‘p donate qilgan foydalanuvchilar (Top 10)</p>
-
-  {% if top_donators %}
-    <ol>
-      {% for d in top_donators %}
-        <li>
-          <strong>{{ d.user__username }}</strong>
-          — {{ d.total|intcomma }} so‘m
-        </li>
-      {% endfor %}
-    </ol>
-  {% else %}
-    <p>Hozircha donatorlar yo‘q. Birinchi bo‘ling.</p>
-  {% endif %}
-
-  <p><small>Donatorlar reytingi faqat muvaffaqiyatli (paid) tranzaksiyalar bo‘yicha hisoblanadi.</small></p>
+</div>
 {% endblock %}

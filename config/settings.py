@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["127.0.0.1","localhost","library.coderboys.dev",]
 
@@ -152,7 +152,6 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'axes.backends.AxesStandaloneBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
@@ -180,8 +179,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
-TSPAY_SHOP_ACCESS_TOKEN = os.environ.get("TSPAY_SHOP_ACCESS_TOKEN", "")
-TSPAY_CALLBACK_URL = os.environ.get("TSPAY_CALLBACK_URL", "https://yourwebsite.com/payment/callback")
 
 
 CKEDITOR_5_CONFIGS = {

@@ -178,6 +178,7 @@
           {% if user.is_authenticated %}
             <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}"><i class="bi bi-collection"></i> bo'limlar</a></li>
             <li class="nav-item"><a class="nav-link" href="{% url 'profile_view' %}"><i class="bi bi-person-badge"></i> profil</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'donate' %}"><i class="bi bi-book"></i> donate</a></li>
             <li class="nav-item ms-lg-2">
                 <form action="{% url 'logout' %}" method="post" class="logout-form">
                     {% csrf_token %}
