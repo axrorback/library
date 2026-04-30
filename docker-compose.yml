@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: always
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    restart: always
+
+  web:
+    build: .
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    volumes:
+      - static_volume:/app/staticfiles
+    depends_on:
+      - db
+      - redis
+    env_file: .env
+
+  celery:
+    build: .
+    command: celery -A config worker -l info
+    depends_on:
+      - redis
+      - db
+    env_file: .env
+
+  celery-beat:
+    build: .
+    command: celery -A config beat -l info
+    depends_on:
+      - redis
+      - db
+    env_file: .env
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - static_volume:/app/staticfiles
+      - ./nginx:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:
+  static_volume:
