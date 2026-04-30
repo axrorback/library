@@ -45,7 +45,7 @@ def donate_view(request):
         donation = Donation.objects.create(
             user=request.user,
             amount=amount,
-            order_id=str(data["order_id"]),
+            cheque_id=str(data["order_id"]),
             payment_url=data["payment_url"],
         )
 
