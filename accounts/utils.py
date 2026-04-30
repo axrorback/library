@@ -4,7 +4,7 @@ import requests
 import os
 from dotenv import load_dotenv
 load_dotenv()
-TOKEN = os.getenv('BOT_TOKEN','8677650274:AAGsBYf3G_koCBUXehDzLwH_ZjALqqMUKoM')
+TOKEN = os.getenv('BOT_TOKEN')
 
 URL = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
 
