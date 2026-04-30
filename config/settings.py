@@ -9,12 +9,13 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1","localhost","library.coderboys.dev",]
+ALLOWED_HOSTS = ["127.0.0.1","localhost","library.coderboys.dev",'9559-2a05-45c2-65b5-dc00-5f2-730f-160d-3bd2.ngrok-free.app']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://library.coderboys.dev",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    'https://9559-2a05-45c2-65b5-dc00-5f2-730f-160d-3bd2.ngrok-free.app',
 ]
 
 INSTALLED_APPS = [
@@ -70,6 +71,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+SITE_ID = 1
 
 DATABASES = {
     "default": {
