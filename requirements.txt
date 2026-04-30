@@ -12,16 +12,23 @@ click==8.3.1
 click-didyoumean==0.3.1
 click-plugins==1.1.1.2
 click-repl==0.3.0
+cryptography==47.0.0
 Django==6.0.1
+django-allauth==65.16.1
 django-axes==8.1.0
+django-ckeditor-5==0.2.20
+django-storages==1.14.6
 dotenv==0.9.9
 idna==3.11
 kombu==5.6.2
+numpy==2.4.4
 packaging==26.0
+pandas==3.0.2
 pillow==12.1.0
 prompt_toolkit==3.0.52
 psycopg2-binary==2.9.11
 pycparser==3.0
+PyJWT==2.12.1
 pyTelegramBotAPI==4.30.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
@@ -29,6 +36,7 @@ redis==7.1.0
 requests==2.32.5
 six==1.17.0
 sqlparse==0.5.5
+tspay-client==0.2.5
 typing_extensions==4.15.0
 tzdata==2025.3
 tzlocal==5.3.1
@@ -36,5 +44,3 @@ urllib3==2.6.3
 vine==5.1.0
 wcwidth==0.3.0
 whitenoise==6.11.0
-
-django-allauth

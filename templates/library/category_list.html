@@ -1,18 +1,83 @@
 {% extends "base.html" %}
+
 {% block title %}Bo'limlar{% endblock %}
 
 {% block content %}
-<h2>Bo'limlar</h2>
+<div class="container mt-4">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h2>Kutubxona bo'limlari</h2>
+        </div>
 
-<ul>
-  {% for c in categories %}
-    <li>
-      <a href="{% url 'book_list_by_category' c.slug %}">
-        {{ c.name }} ({{ c.book_count }})
-      </a>
-    </li>
-  {% empty %}
-    <li>Bo‘limlar yo‘q</li>
-  {% endfor %}
-</ul>
+        <!-- Qidiruv paneli -->
+        <div class="col-md-6">
+            <form method="GET" action="" class="d-flex">
+                <input
+                    type="text"
+                    name="q"
+                    class="form-control me-2"
+                    placeholder="Bo'lim nomini yozing..."
+                    value="{{ request.GET.q|default:'' }}"
+                >
+                <button type="submit" class="btn btn-primary">Izlash</button>
+                {% if request.GET.q %}
+                    <a href="{% url 'category_list' %}" class="btn btn-outline-secondary ms-2">Tozalash</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Bo'limlar ro'yxati -->
+    <div class="row">
+        <div class="col-12">
+            <div class="list-group">
+                {% for c in categories %}
+                    <a href="{% url 'book_list_by_category' c.slug %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-folder2-open me-2"></i> {{ c.name }}
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ c.book_count }} ta kitob</span>
+                    </a>
+                {% empty %}
+                    <div class="alert alert-info">
+                        {% if request.GET.q %}
+                            "{{ request.GET.q }}" bo'yicha hech qanday bo'lim topilmadi.
+                        {% else %}
+                            Hozircha bo'limlar mavjud emas.
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination (Sahifalash) -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&laquo; Birinchi</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Oldingi</a>
+                </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link">Sahifa {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Keyingi</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Oxirgi &raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
 {% endblock %}

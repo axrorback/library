@@ -1,95 +1,234 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Profilni tahrirlash{% endblock %}
+{% block title %}Profilni tahrirlash | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    .edit-container {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .terminal-command {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    /* Rasm yuklash qismi */
+    .avatar-edit-section {
+        display: flex;
+        align-items: center;
+        gap: 25px;
+        padding: 20px;
+        background: #fcfcfc;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 25px;
+    }
+
+    .current-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary);
+        padding: 3px;
+    }
+
+    /* Form elementlari */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #656d76;
+        margin-bottom: 6px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="tel"],
+    input[type="email"],
+    textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fff;
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        transition: 0.2s;
+    }
+
+    input:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 127, 55, 0.1);
+    }
+
+    /* File inputni biroz tartibga solish */
+    input[type="file"] {
+        font-size: 0.8rem;
+        color: #656d76;
+    }
+
+    /* Tugmalar */
+    .action-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px dashed var(--border);
+    }
+
+    .btn-save {
+        flex: 2;
+        background: var(--primary);
+        color: white;
+        border: 1px solid rgba(27, 31, 36, 0.15);
+        padding: 10px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-save:hover { background: #1a6e31; }
+
+    .btn-cancel {
+        flex: 1;
+        background: white;
+        border: 1px solid var(--border);
+        color: var(--text);
+        text-decoration: none;
+        text-align: center;
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        transition: 0.2s;
+    }
+
+    .btn-cancel:hover { background: #f6f8fa; }
+
+    /* Xavfsizlik qismi */
+    .security-box {
+        margin-top: 25px;
+        padding: 15px;
+        background: #fff8eb;
+        border: 1px solid #d4a72c44;
+        border-radius: 8px;
+        font-size: 0.85rem;
+    }
+
+    .errorlist {
+        color: #cf222e;
+        list-style: none;
+        padding: 0;
+        font-size: 0.8rem;
+        margin-top: 5px;
+    }
+
+    @media (max-width: 576px) {
+        .form-row { grid-template-columns: 1fr; }
+        .avatar-edit-section { flex-direction: column; text-align: center; }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div style="max-width: 650px; margin: 40px auto; padding: 25px; border: 1px solid #ddd; border-radius: 12px; background-color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-family: 'Segoe UI', sans-serif;">
-    
-    <h2 style="text-align: center; color: #333; margin-bottom: 30px;">Profilni tahrirlash</h2>
+<div class="edit-container">
+    <span class="terminal-command">user@lib:~$ nano update_profile.conf</span>
 
-    <form method="POST" enctype="multipart/form-data">
+    <h2 class="h4 mb-4 fw-bold">Profil ma'lumotlarini yangilash</h2>
+
+    <form method="POST" enctype="multipart/form-data" autocomplete="off">
         {% csrf_token %}
 
-        <div style="text-align: center; margin-bottom: 25px;">
+        <div class="avatar-edit-section shadow-sm">
             {% if form.instance.avatar %}
-                <img src="{{ form.instance.avatar.url }}" alt="Avatar" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff; padding: 3px;">
+                <img src="{{ form.instance.avatar.url }}" alt="Current Avatar" class="current-avatar">
+            {% else %}
+                <div class="current-avatar d-flex align-items-center justify-content-center bg-light">
+                    <i class="bi bi-person fs-1 text-muted"></i>
+                </div>
             {% endif %}
-            <div style="margin-top: 10px;">
-                <label style="font-weight: 600; display: block; margin-bottom: 5px;">Profil rasmi:</label>
+            <div class="text-start">
+                <label class="d-block fw-bold small mb-1">Profil rasmini o'zgartirish:</label>
                 {{ form.avatar }}
+                <div class="helptext mt-1 text-muted" style="font-size: 0.7rem;">
+                    Tavsiya etiladi: 1:1 format, max 2MB (.jpg, .png)
+                </div>
                 {% if form.avatar.errors %}
-                    <div style="color: #dc3545; font-size: 13px; margin-top: 5px;">{{ form.avatar.errors }}</div>
+                    <ul class="errorlist">{{ form.avatar.errors }}</ul>
                 {% endif %}
-                <small style="color: #6c757d; display: block; margin-top: 5px;">Rasm hajmi 2MB dan oshmasligi va .jpg, .png bo'lishi shart.</small>
             </div>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 25px 0;">
-
-        <div style="display: flex; gap: 20px; margin-bottom: 15px;">
-            <div style="flex: 1;">
-                <label style="font-weight: 600; display: block; margin-bottom: 5px;">Ism:</label>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">Ism</label>
                 {{ form.first_name }}
-                {{ form.first_name.errors }}
+                {% if form.first_name.errors %}<ul class="errorlist">{{ form.first_name.errors }}</ul>{% endif %}
             </div>
-            <div style="flex: 1;">
-                <label style="font-weight: 600; display: block; margin-bottom: 5px;">Familiya:</label>
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Familiya</label>
                 {{ form.last_name }}
-                {{ form.last_name.errors }}
+                {% if form.last_name.errors %}<ul class="errorlist">{{ form.last_name.errors }}</ul>{% endif %}
             </div>
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <label style="font-weight: 600; display: block; margin-bottom: 5px;">O'zingiz haqingizda:</label>
+        <div class="form-group">
+            <label for="{{ form.bio.id_for_label }}">O'zingiz haqingizda (Bio)</label>
             {{ form.bio }}
-            {{ form.bio.errors }}
+            {% if form.bio.errors %}<ul class="errorlist">{{ form.bio.errors }}</ul>{% endif %}
         </div>
 
-        <div style="margin-bottom: 15px;">
-            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Telefon raqamingiz:</label>
-            {{ form.phone_number }}
-            {{ form.phone_number.errors }}
+        <div class="form-row">
+            <div class="form-group">
+                <label for="{{ form.phone_number.id_for_label }}">Telefon raqami</label>
+                {{ form.phone_number }}
+                {% if form.phone_number.errors %}<ul class="errorlist">{{ form.phone_number.errors }}</ul>{% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.birth_date.id_for_label }}">Tug'ilgan sana</label>
+                {{ form.birth_date }}
+                {% if form.birth_date.errors %}<ul class="errorlist">{{ form.birth_date.errors }}</ul>{% endif %}
+            </div>
         </div>
 
-        <div style="margin-bottom: 25px;">
-            <label style="font-weight: 600; display: block; margin-bottom: 5px;">Tug'ilgan sana:</label>
-            {{ form.birth_date }}
-            {{ form.birth_date.errors }}
-        </div>
-
-        <div style="display: flex; gap: 10px; margin-top: 30px;">
-            <button type="submit" style="flex: 2; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer;">
-                O'zgarishlarni saqlash
+        <div class="action-group">
+            <button type="submit" class="btn-save">
+                <i class="bi bi-cloud-arrow-up"></i> O'zgarishlarni saqlash
             </button>
-            <a href="{% url 'profile_view' %}" style="flex: 1; padding: 12px; background-color: #6c757d; color: white; text-decoration: none; text-align: center; border-radius: 6px; font-size: 16px;">
+            <a href="{% url 'profile_view' %}" class="btn-cancel">
                 Bekor qilish
             </a>
         </div>
     </form>
-    <p>
-  Xavfsizlik:
-  <a href="{% url 'change_password' %}">
-    {% if request.user.has_usable_password %}
-      Parolni o'zgartirish
-    {% else %}
-      Parol o'rnatish
-    {% endif %}
-  </a>
-</p>
-</div>
 
-<style>
-    input[type="text"], input[type="date"], textarea, input[type="file"] {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        box-sizing: border-box;
-        font-size: 15px;
-    }
-    textarea { resize: vertical; }
-    input:focus { border-color: #007bff; outline: none; box-shadow: 0 0 5px rgba(0,123,255,0.2); }
-    .errorlist { color: #dc3545; padding-left: 0; list-style: none; font-size: 13px; margin-top: 5px; }
-</style>
+    <div class="security-box mt-4">
+        <i class="bi bi-shield-lock"></i> <strong>Xavfsizlik:</strong>
+        Hisobingizni himoya qilish uchun
+        <a href="{% url 'change_password' %}" class="text-decoration-none fw-bold" style="color: #9a6700;">
+            {% if request.user.has_usable_password %}
+                parolni o'zgartiring
+            {% else %}
+                yangi parol o'rnating
+            {% endif %}
+        </a>.
+    </div>
+</div>
 {% endblock %}

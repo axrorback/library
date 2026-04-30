@@ -1,49 +1,257 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Digital Lib{% endblock %}</title>
-    <style>
-        .messages { list-style: none; padding: 0; }
-        .success { color: green; }
-        .error { color: red; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% block title %}Digital Lib | Management System{% endblock title %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f6f8fa; /* Ochiq kulrang fon */
+      --card-bg: #ffffff; /* Sof oq oyna */
+      --text: #24292f; /* To'q kulrang matn */
+      --primary: #1a7f37; /* Tizim yashil rangi */
+      --accent: #0969da; /* Havorang linklar */
+      --border: #d0d7de; /* Chegaralar uchun */
+      --terminal-head: #f3f4f6; /* Terminal sarlavhasi */
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-mono);
+      line-height: 1.6;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .custom-nav {
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      padding: 0.7rem 0;
+    }
+
+    .navbar-brand {
+      font-weight: 600;
+      color: var(--primary) !important;
+      font-size: 1.1rem;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-link {
+      color: var(--text) !important;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem !important;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary) !important;
+      background: rgba(26, 127, 55, 0.1);
+    }
+
+    /* Django Messages (Alerts) */
+    .messages-container {
+      margin-bottom: 1.5rem;
+    }
+    .msg-item {
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      border: 1px solid;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .msg-item.success { background: #dafbe1; color: #1a7f37; border-color: #bee5c5; }
+    .msg-item.error { background: #ffebe9; color: #cf222e; border-color: #f1d0d1; }
+
+    /* Content Wrapper */
+    .content-wrapper {
+      max-width: 950px;
+      margin: 100px auto 50px;
+      padding: 0 20px;
+      flex-grow: 1;
+    }
+
+    /* Terminal Window Style */
+    .terminal-window {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(140, 149, 159, 0.15);
+    }
+
+    .terminal-header {
+      background: var(--terminal-head);
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dots { display: flex; gap: 8px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-1 { background: #ff5f57; border: 1px solid #e1483f; }
+    .dot-2 { background: #febc2e; border: 1px solid #e0a41d; }
+    .dot-3 { background: #28c840; border: 1px solid #1fa533; }
+
+    .path-display {
+      font-size: 0.75rem;
+      color: #656d76;
+      font-weight: 400;
+    }
+
+    .terminal-body {
+      padding: 40px;
+    }
+
+    /* Buttons & Actions */
+    .logout-form { display: inline; }
+    .logout-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: #cf222e;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      transition: 0.2s;
+    }
+    .logout-btn:hover {
+      background: #ffebe9;
+      border-color: #f1d0d1;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 30px;
+      background: white;
+      border-top: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: #656d76;
+    }
+
+    .status-online { color: var(--primary); font-weight: bold; }
+
+    @media (max-width: 768px) {
+      .terminal-body { padding: 25px; }
+      .path-display { display: none; }
+      .content-wrapper { margin-top: 85px; }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <nav>
-        <a href="/">Bosh sahifa</a> |
-        {% if user.is_authenticated %}
-            <a href="{% url 'profile_view' %}">Profil</a>
-            <a href="{% url 'donate' %}">Donate qilish</a>
-            <a href="{% url 'category_list' %}">Bo'limlar(kitob)</a>
-            <form action="{% url 'logout' %}" method="post">
-                {% csrf_token %}
-                <button type="submit">Tizimdan chiqish</button>
-            </form>
-        {% else %}
-            <a href="{% url 'register' %}">Ro'yxatdan o'tish</a>
-        {% endif %}
-    </nav>
 
-    <hr>
+  <nav class="navbar navbar-expand-lg fixed-top custom-nav">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <i class="bi bi-terminal-split"></i> lib_sys:~$
+      </a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#libNavbar">
+        <span class="bi bi-list fs-3"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="libNavbar">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house"></i> bosh_sahifa</a></li>
+
+          {% if user.is_authenticated %}
+            <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}"><i class="bi bi-collection"></i> bo'limlar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'donate' %}"><i class="bi bi-coin"></i> donate</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'profile_view' %}"><i class="bi bi-person-badge"></i> profil</a></li>
+            <li class="nav-item ms-lg-2">
+                <form action="{% url 'logout' %}" method="post" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn"><i class="bi bi-power"></i> chiqish</button>
+                </form>
+            </li>
+          {% else %}
+            <li class="nav-item"><a class="nav-link text-primary fw-bold" href="{% url 'register' %}"><i class="bi bi-key"></i> kirish_tizimga</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="content-wrapper">
 
     {% if messages %}
-        <ul class="messages">
+        <div class="messages-container">
             {% for message in messages %}
-                <li class="{{ message.tags }}">{{ message }}</li>
+                <div class="msg-item {{ message.tags }}">
+                   {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill"></i>
+                   {% else %}<i class="bi bi-exclamation-triangle-fill"></i>{% endif %}
+                   {{ message }}
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% endif %}
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    <article class="terminal-window">
+      <div class="terminal-header">
+        <div class="terminal-dots">
+          <div class="dot dot-1"></div>
+          <div class="dot dot-2"></div>
+          <div class="dot dot-3"></div>
+        </div>
+        <div class="path-display">
+          <i class="bi bi-folder2-open"></i> working_dir: {{ request.path }}
+        </div>
+      </div>
 
-    <hr>
-    <footer>
-        <p>&copy; 2026 Digital Library</p>
-    </footer>
+      <div class="terminal-body">
+        {% block content %}
+          <h1 class="h4 mb-3">Tizimga xush kelibsiz!</h1>
+          <p class="text-muted">Bu yerdan kitoblarni qidirishingiz, yuklab olishingiz yoki kutubxona fondini ko'rishingiz mumkin.</p>
+        {% endblock %}
+      </div>
+    </article>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="mb-1">
+        Tizim holati: <span class="status-online">online</span> |
+        Versiya: <span class="badge bg-light text-dark border">v2.0.4-stable</span>
+      </div>
+      <div>&copy; <span id="year"></span> Digital Library System. Barcha huquqlar himoyalangan.</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Navbar mobil rejimda bosilganda avtomatik yopilishi uchun
+    const navLinks = document.querySelectorAll('.nav-link');
+    const menuToggle = document.getElementById('libNavbar');
+    const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle:false});
+    navLinks.forEach((l) => {
+        l.addEventListener('click', () => {
+            if(window.innerWidth < 992) { bsCollapse.hide(); }
+        });
+    });
+  </script>
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>

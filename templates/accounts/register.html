@@ -1,13 +1,208 @@
 {% extends 'base.html' %}
+{% load socialaccount %}
 
-{% block title %}Ro'yxatdan o'tish{% endblock %}
+{% block title %}Ro'yxatdan o'tish | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Register sahifasi uchun maxsus stil */
+    .register-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .terminal-command {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 25px;
+        display: block;
+    }
+
+    /* Formalarni chiroyli qilish */
+    form p {
+        margin-bottom: 20px;
+    }
+
+    form label {
+        display: block;
+        font-size: 0.8rem;
+        color: #656d76;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+
+    form input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fcfcfc;
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        transition: all 0.2s;
+    }
+
+    form input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 127, 55, 0.1);
+        background: #fff;
+    }
+
+    /* Xatolik xabarlari */
+    .errorlist {
+        color: #cf222e;
+        list-style: none;
+        padding: 0;
+        font-size: 0.75rem;
+        margin-top: 5px;
+    }
+
+    /* Tugma stili */
+    .btn-submit {
+        background-color: var(--primary);
+        color: white;
+        border: 1px solid rgba(27, 31, 36, 0.15);
+        padding: 12px;
+        border-radius: 6px;
+        font-family: var(--font-mono);
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        transition: 0.2s;
+        margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+        background-color: #1a6e31;
+        transform: translateY(-1px);
+    }
+
+    /* Oauth Divider */
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 25px 0;
+        color: #8b949e;
+        font-size: 0.75rem;
+    }
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid var(--border);
+    }
+    .divider:not(:empty)::before { margin-right: .75em; }
+    .divider:not(:empty)::after { margin-left: .75em; }
+
+    /* Social Buttons */
+    .social-auth {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+    .btn-social {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: white;
+        text-decoration: none;
+        color: var(--text);
+        font-size: 0.85rem;
+        transition: 0.2s;
+    }
+    .btn-social:hover {
+        background: #f6f8fa;
+        border-color: #8b949e;
+        color: var(--text);
+    }
+    .btn-github:hover { background: #24292f; color: white !important; }
+    .btn-google:hover { border-color: #4285F4; color: #4285F4 !important; }
+
+    .auth-footer {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px dashed var(--border);
+        font-size: 0.85rem;
+        text-align: center;
+    }
+
+    .auth-footer a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .helptext {
+        display: block;
+        font-size: 0.7rem;
+        color: #8b949e;
+        margin-top: 4px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-    <h2>Ro'yxatdan o'tish</h2>
-    <form method="POST">
+<div class="register-container">
+    <span class="terminal-command">user@lib:~$ ./create_account.sh --mode=full</span>
+
+    <h2 class="h4 mb-4 fw-bold">Yangi hisob yaratish</h2>
+
+    <div class="social-auth">
+        <a href="{% provider_login_url 'google' %}" class="btn-social btn-google">
+            <i class="bi bi-google"></i> Google
+        </a>
+        <a href="{% provider_login_url 'github' %}" class="btn-social btn-github">
+            <i class="bi bi-github"></i> GitHub
+        </a>
+    </div>
+
+    <div class="divider">yoki ma'lumotlarni to'ldiring</div>
+
+    <form method="POST" autocomplete="off">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Ro'yxatdan o'tish</button>
+
+        {% if form.non_field_errors %}
+            <div class="msg-item error mb-3">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <p>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <span class="helptext">{{ field.help_text|safe }}</span>
+                {% endif %}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li><i class="bi bi-exclamation-circle"></i> {{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </p>
+        {% endfor %}
+
+        <button type="submit" class="btn-submit">
+            <i class="bi bi-person-plus"></i> Ro'yxatdan o'tish
+        </button>
     </form>
-    <p>Akkauntingiz bormi? <a href="{% url 'login' %}">Kirish</a></p>
+
+    <div class="auth-footer">
+        <p class="text-muted">
+            Akkauntingiz bormi?
+            <a href="{% url 'login' %}">
+                <i class="bi bi-box-arrow-in-right"></i> Tizimga kirish
+            </a>
+        </p>
+    </div>
+</div>
 {% endblock %}

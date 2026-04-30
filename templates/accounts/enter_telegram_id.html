@@ -1,12 +1,159 @@
 {% extends 'base.html' %}
 
+{% block title %}Telegram bog'lash | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    .telegram-container {
+        max-width: 550px;
+        margin: 0 auto;
+    }
+
+    .terminal-command {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 25px;
+        display: block;
+    }
+
+    /* Qo'llanma bloki */
+    .stepper-box {
+        background: #fcfcfc;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .step-item {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .step-item:last-child { margin-bottom: 0; }
+
+    .step-number {
+        background: var(--primary);
+        color: white;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .step-text {
+        font-size: 0.85rem;
+        color: var(--text);
+    }
+
+    .bot-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    /* Form stili */
+    .id-input-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    input[type="number"] {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+    }
+
+    input[type="number"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 127, 55, 0.1);
+    }
+
+    .btn-send {
+        background: var(--primary);
+        color: white;
+        border: 1px solid rgba(27, 31, 36, 0.15);
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+
+    .btn-send:hover {
+        background: #1a6e31;
+        transform: translateY(-1px);
+    }
+
+    /* No-spinner for input number */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    @media (max-width: 576px) {
+        .id-input-group { flex-direction: column; }
+        .btn-send { width: 100%; justify-content: center; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    <h2>Telegram ID bog'lash</h2>
-    <p>Avval botimizga (@SizningBot) /start buyrug'ini yuboring va ID-ingizni oling.</p>
-    
-    <form action="{% url 'send_telegram_code' %}" method="POST">
+<div class="telegram-container">
+    <span class="terminal-command">user@lib:~$ ./telegram-sync.sh --init</span>
+
+    <h2 class="h4 mb-4 fw-bold"><i class="bi bi-telegram text-primary"></i> Telegram ID bog'lash</h2>
+
+    <div class="stepper-box shadow-sm">
+        <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-text">
+                Telegram orqali <a href="https://t.me/OnlineKitabBot" target="_blank" class="bot-link">@OnlineKitabBot</a> botiga kiring.
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-text">
+                Botga <code class="bg-light px-1 border rounded">/start</code> buyrug'ini yuboring.
+            </div>
+        </div>
+        <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-text">
+                Bot sizga taqdim etgan <b>ID raqamini</b> pastdagi maydonga kiriting.
+            </div>
+        </div>
+    </div>
+
+    <form action="{% url 'send_telegram_code' %}" method="POST" autocomplete="off">
         {% csrf_token %}
-        <input type="number" name="telegram_id" placeholder="Telegram ID kiriting" required>
-        <button type="submit">Kod yuborish</button>
+        <label class="small fw-bold text-muted mb-2 d-block">Sizning Telegram ID:</label>
+        <div class="id-input-group">
+            <input type="number" name="telegram_id" placeholder="Masalan: 12345678" required>
+            <button type="submit" class="btn-send">
+                <i class="bi bi-send-check"></i> Kod yuborish
+            </button>
+        </div>
     </form>
+
+    <div class="mt-4 p-3 border-start border-primary bg-light" style="font-size: 0.8rem;">
+        <i class="bi bi-info-circle-fill text-primary"></i>
+        ID bog'langandan so'ng, siz bot orqali kitoblar haqida bildirishnomalar va xavfsizlik kodlarini olishingiz mumkin.
+    </div>
+</div>
 {% endblock %}

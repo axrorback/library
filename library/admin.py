@@ -11,6 +11,7 @@ class BookAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name','is_active','user']
+    prepopulated_fields = {'slug': ('name',)}
 
 
 @admin.register(Language)

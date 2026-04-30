@@ -1,60 +1,172 @@
 {% extends 'base.html' %}
 
-{% block content %}
-    <h2>Telegramni tasdiqlash</h2>
-    
-    <p>Botimiz tomonidan yuborilgan 6 xonali kodni kiriting:</p>
+{% block title %}Kodni tasdiqlash | LibSystem{% endblock %}
 
-    <form method="POST">
+{% block extra_head %}
+<style>
+    .verify-container {
+        max-width: 450px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .terminal-command {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 25px;
+        display: block;
+        text-align: left;
+    }
+
+    /* Kod kiritish maydoni */
+    .code-input {
+        letter-spacing: 12px;
+        font-size: 2rem;
+        text-align: center;
+        padding: 15px;
+        width: 100%;
+        max-width: 250px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-family: var(--font-mono);
+        background: #fcfcfc;
+        transition: 0.3s;
+    }
+
+    .code-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(26, 127, 55, 0.1);
+        background: #fff;
+    }
+
+    /* Taymer stili */
+    .timer-wrapper {
+        margin: 25px 0;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+    }
+
+    #timer-display {
+        font-size: 1.2rem;
+        color: #cf222e; /* Vaqt tugayotganini bildirish uchun qizilroq */
+    }
+
+    /* Tugmalar */
+    .btn-verify {
+        background: var(--primary);
+        color: white;
+        border: 1px solid rgba(27, 31, 36, 0.15);
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        width: 100%;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .btn-verify:disabled {
+        background: #8b949e;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    /* Qayta yuborish bloki */
+    #resend-box {
+        margin-top: 20px;
+        padding: 15px;
+        background: #fff8eb;
+        border: 1px solid #d4a72c44;
+        border-radius: 8px;
+    }
+
+    .resend-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .resend-link:hover { text-decoration: underline; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="verify-container">
+    <span class="terminal-command">user@lib:~$ ./verify-session.sh --token-check</span>
+
+    <h2 class="h4 mb-3 fw-bold">Telegramni tasdiqlash</h2>
+    <p class="text-muted small mb-4">
+        <i class="bi bi-shield-lock"></i> Botimiz yuborgan 6 xonali maxfiy kodni kiriting
+    </p>
+
+    <form method="POST" autocomplete="off">
         {% csrf_token %}
-        <div>
-            <input type="text" name="code" placeholder="000000" maxlength="6" required autofocus>
+        <div class="mb-4">
+            <input type="text"
+                   name="code"
+                   class="code-input"
+                   placeholder="000000"
+                   maxlength="6"
+                   pattern="\d{6}"
+                   required
+                   autofocus>
         </div>
-        <br>
-        <button type="submit" id="verify-btn">Tasdiqlash</button>
+
+        <div class="timer-wrapper shadow-sm">
+            <span id="timer-label" class="small text-muted">Kodni kiritish muddati:</span>
+            <div id="timer-display" class="fw-bold">02:00</div>
+        </div>
+
+        <button type="submit" id="verify-btn" class="btn-verify shadow-sm">
+            <i class="bi bi-patch-check"></i> Tasdiqlash
+        </button>
     </form>
 
-    <div style="margin-top: 15px;">
-        <span id="timer-label">Kodni kiritish muddati:</span>
-        <span id="timer-display" style="font-weight: bold;">02:00</span>
+    <div id="resend-box" style="display: none;">
+        <p class="mb-2 small text-dark"><i class="bi bi-exclamation-circle"></i> Vaqt tugadi!</p>
+        <a href="{% url 'profile_edit' %}" class="resend-link">
+            <i class="bi bi-arrow-clockwise"></i> Kodni qayta yuborish
+        </a>
     </div>
+</div>
 
-    <div id="resend-box" style="display: none; margin-top: 10px;">
-        <p>Vaqt tugadi!</p>
-        <a href="{% url 'profile_edit' %}">Kodni qayta yuborish (Profilga qaytish)</a>
-    </div>
+<script>
+    const expireAt = {{ expire_at|default:0 }};
+    const timerDisplay = document.getElementById('timer-display');
+    const verifyBtn = document.getElementById('verify-btn');
+    const resendBox = document.getElementById('resend-box');
+    const timerWrapper = document.querySelector('.timer-wrapper');
 
-    <script>
-        // Django'dan kelgan unix timestamp (soniyalarda)
-        const expireAt = {{ expire_at|default:0 }}; 
-        const timerDisplay = document.getElementById('timer-display');
-        const verifyBtn = document.getElementById('verify-btn');
-        const resendBox = document.getElementById('resend-box');
+    function updateCountdown() {
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = Math.max(0, Math.floor(expireAt - now));
 
-        function updateCountdown() {
-            const now = Math.floor(Date.now() / 1000);
-            const remaining = Math.max(0, Math.floor(expireAt - now));
+        const minutes = Math.floor(remaining / 60);
+        const seconds = remaining % 60;
 
-            const minutes = Math.floor(remaining / 60);
-            const seconds = remaining % 60;
+        timerDisplay.innerText =
+            (minutes < 10 ? "0" : "") + minutes + ":" +
+            (seconds < 10 ? "0" : "") + seconds;
 
-            // 00:00 formatida chiqarish
-            timerDisplay.innerText = 
-                (minutes < 10 ? "0" : "") + minutes + ":" + 
-                (seconds < 10 ? "0" : "") + seconds;
-
-            if (remaining <= 0) {
-                verifyBtn.disabled = true;
-                resendBox.style.display = "block";
-                document.getElementById('timer-label').style.display = "none";
-                timerDisplay.style.display = "none";
-            } else {
-                setTimeout(updateCountdown, 1000);
+        if (remaining <= 0) {
+            verifyBtn.disabled = true;
+            resendBox.style.display = "block";
+            timerWrapper.style.display = "none";
+        } else {
+            // Agar vaqt 30 soniyadan kam qolsa, rangini yanada to'qlashtiramiz
+            if (remaining < 30) {
+                timerDisplay.style.color = "#cf222e";
             }
+            setTimeout(updateCountdown, 1000);
         }
+    }
 
-        if (expireAt > 0) {
-            updateCountdown();
-        }
-    </script>
+    if (expireAt > 0) {
+        updateCountdown();
+    }
+</script>
 {% endblock %}

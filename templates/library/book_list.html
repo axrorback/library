@@ -1,20 +1,60 @@
 {% extends "base.html" %}
-{% block title %}{{ category.name }}{% endblock %}
+
+{% block title %}{{ category.name }} bo'limidagi kitoblar{% endblock %}
 
 {% block content %}
-<h2>{{ category.name }} bo‘limidagi kitoblar</h2>
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'category_list' %}">Bo'limlar</a></li>
+            <li class="breadcrumb-item active">{{ category.name }}</li>
+        </ol>
+    </nav>
 
-<ul>
-  {% for b in books %}
-    <li>
-      <a href="{% url 'book_detail' category.slug b.slug %}">
-        {{ b.title }}
-      </a>
-    </li>
-  {% empty %}
-    <li>Bu bo‘limda kitob yo‘q</li>
-  {% endfor %}
-</ul>
+    <h2 class="mb-4">{{ category.name }} bo'limidagi kitoblar</h2>
 
-<a href="{% url 'category_list' %}">Bo‘limlarga qaytish</a>
+    <div class="row">
+        {% for book in books %}
+            <div class="col-md-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if book.cover %}
+                        <img src="{{ book.cover.url }}" class="card-img-top" alt="{{ book.title }}" style="height: 300px; object-fit: cover;">
+                    {% else %}
+                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 300px;">
+                            Rasm mavjud emas
+                        </div>
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title text-truncate">{{ book.title }}</h5>
+                        <p class="card-text text-muted small">Muallif: {{ book.author }}</p>
+                        <a href="{{ book.get_absolute_url }}" class="btn btn-sm btn-primary w-100">Batafsil</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Ushbu bo'limda hozircha kitoblar mavjud emas.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Oldingi</a></li>
+            {% endif %}
+
+            <li class="page-item disabled"><span class="page-link">Sahifa {{ page_obj.number }} / {{ paginator.num_pages }}</span></li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Keyingi</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
 {% endblock %}

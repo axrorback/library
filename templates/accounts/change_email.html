@@ -1,12 +1,135 @@
 {% extends 'base.html' %}
 
+{% block title %}Emailni o'zgartirish | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    .email-change-container {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .terminal-command {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 25px;
+        display: block;
+    }
+
+    /* Form elementlari */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #656d76;
+        margin-bottom: 8px;
+    }
+
+    input[type="email"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fcfcfc;
+        font-family: var(--font-mono);
+        font-size: 0.95rem;
+        transition: all 0.2s;
+    }
+
+    input[type="email"]:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 127, 55, 0.1);
+        background: #fff;
+    }
+
+    /* Tugmalar */
+    .btn-update {
+        background: var(--primary);
+        color: white;
+        border: 1px solid rgba(27, 31, 36, 0.15);
+        padding: 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        width: 100%;
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-update:hover {
+        background: #1a6e31;
+        transform: translateY(-1px);
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-top: 20px;
+        color: #656d76;
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--accent);
+    }
+
+    /* Ogohlantirish bloki */
+    .info-note {
+        margin-top: 25px;
+        padding: 15px;
+        background: #f6f8fa;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: #57606a;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    <h2>Emailni o'zgartirish</h2>
-    <form method="POST">
+<div class="email-change-container">
+    <span class="terminal-command">user@lib:~$ ./update-identity.sh --target=email</span>
+
+    <h2 class="h4 mb-4 fw-bold">Email manzilini o'zgartirish</h2>
+
+    <form method="POST" autocomplete="off">
         {% csrf_token %}
-        <input type="email" name="email" value="{{ user.email }}" required>
-        <button type="submit">Emailni yangilash va kodni qayta yuborish</button>
+
+        <div class="form-group">
+            <label for="email">Yangi email manzilini kiriting:</label>
+            <input type="email"
+                   name="email"
+                   id="email"
+                   value="{{ user.email }}"
+                   placeholder="example@domain.com"
+                   required
+                   autofocus>
+        </div>
+
+        <button type="submit" class="btn-update shadow-sm">
+            <i class="bi bi-envelope-check"></i> Yangilash va kod yuborish
+        </button>
     </form>
-    <br>
-    <a href="{% url 'verify_otp' %}">Orqaga qaytish</a>
+
+    <div class="info-note">
+        <i class="bi bi-info-circle"></i>
+        <strong>Eslatma:</strong> Email manzilingiz o'zgargandan so'ng, yangi manzilga tasdiqlash kodi yuboriladi. Hisobingiz xavfsizligi uchun amaldagi seans qayta tekshirilishi mumkin.
+    </div>
+
+    <a href="{% url 'verify_otp' %}" class="back-link">
+        <i class="bi bi-arrow-left"></i> Orqaga qaytish
+    </a>
+</div>
 {% endblock %}

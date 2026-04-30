@@ -3,51 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Tasdiqlash</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #f9f9f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding: 20px 0;">
+<body style="margin: 0; padding: 0; background-color: #f6f8fa; font-family: 'JetBrains Mono', 'Courier New', Courier, monospace;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding: 40px 0;">
         <tr>
             <td align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="400" style="background-color: #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <table border="0" cellpadding="0" cellspacing="0" width="450" style="background-color: #ffffff; border: 1px solid #d0d7de; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
 
                     <tr>
-                        <td align="center" style="background-color: #1a2a6c; padding: 40px 20px;">
-                            <h2 style="color: #ffffff; margin: 0; font-size: 24px; font-weight: 600;">Xush kelibsiz!</h2>
+                        <td style="background-color: #f6f8fa; padding: 15px 25px; border-bottom: 1px solid #d0d7de;">
+                            <table width="100%">
+                                <tr>
+                                    <td>
+                                        <span style="color: #1a7f37; font-weight: bold; font-size: 14px;">user@libsystem:~$</span>
+                                        <span style="color: #24292f; font-size: 14px;"> ./verify_auth</span>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="padding: 40px 30px; text-align: center;">
-                            <p style="color: #555555; font-size: 16px; margin-bottom: 25px;">
-                                Salom, <b>{{ username }}</b>!<br>
-                                Platformamizda ro'yxatdan o'tganingizdan xursandmiz.
+                        <td style="padding: 40px 30px; text-align: left;">
+                            <h2 style="color: #24292f; margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">Xush kelibsiz!</h2>
+
+                            <p style="color: #57606a; font-size: 15px; line-height: 1.6; margin-bottom: 25px;">
+                                Salom, <b style="color: #0969da;">{{ username }}</b>!<br>
+                                Platformamizda xavfsiz seansni boshlash uchun quyidagi tasdiqlash kodidan foydalaning:
                             </p>
 
-                            <p style="color: #888888; font-size: 14px; margin-bottom: 10px;">Sizning tasdiqlash kodingiz:</p>
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8f9fa; border: 1px solid #d0d7de; border-radius: 6px;">
+                                <tr>
+                                    <td align="center" style="padding: 25px;">
+                                        <span style="font-size: 36px; font-weight: bold; letter-spacing: 10px; color: #1a7f37; display: block; font-family: monospace;">
+                                            {{ otp_code }}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </table>
 
-                            <div style="background-color: #fdfcf0; border: 2px dashed #d4af37; border-radius: 10px; padding: 20px; margin: 0 auto;">
-                                <span style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #1a2a6c; display: block;">
-                                    {{ otp_code }}
+                            <p style="color: #cf222e; font-size: 13px; margin-top: 25px; display: flex; align-items: center;">
+                                <span style="background-color: #ffebe9; padding: 4px 8px; border-radius: 4px; border: 1px solid #ff818266;">
+                                    ⚠️ Kodning amal qilish muddati: 2 daqiqa
                                 </span>
-                            </div>
-
-                            <p style="color: #e74c3c; font-size: 13px; margin-top: 25px; font-style: italic;">
-                                ⚠️ Ushbu kod 2 daqiqa davomida amal qiladi.
                             </p>
                         </td>
                     </tr>
 
                     <tr>
-                        <td style="background-color: #f4f4f4; padding: 20px; text-align: center; border-top: 1px solid #eeeeee;">
-                            <p style="color: #999999; font-size: 12px; margin: 0;">
-                                Hurmat bilan, <b style="color: #1a2a6c;">Jamoamiz</b>
+                        <td style="background-color: #f6f8fa; padding: 25px; text-align: center; border-top: 1px dashed #d0d7de;">
+                            <p style="color: #8b949e; font-size: 12px; margin: 0; line-height: 1.5;">
+                                Hurmat bilan, <br>
+                                <b style="color: #1a7f37; text-transform: uppercase;">LibSystem Backend Jamoasi</b>
                             </p>
-                            <p style="color: #999999; font-size: 11px; margin-top: 5px;">
-                                Agar bu so'rovni siz yubormagan bo'lsangiz, xabarga e'tibor bermang.
+                            <p style="color: #8b949e; font-size: 11px; margin-top: 15px; border-top: 1px solid #eeeeee; padding-top: 10px;">
+                                Bu xabar avtomatik ravishda yuborilgan. <br>
+                                Agar siz ushbu so'rovni amalga oshirmagan bo'lsangiz, hisobingiz xavfsizligini tekshiring.
                             </p>
                         </td>
                     </tr>
                 </table>
+
+                <p style="color: #8b949e; font-size: 11px; margin-top: 20px;">
+                    &copy; 2026 LibSystem Project. Built with Django & Python.
+                </p>
             </td>
         </tr>
     </table>

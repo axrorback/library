@@ -1,38 +1,217 @@
 {% extends 'base.html' %}
 
+{% block title %}Profil: {{ profile.user.username }} | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    .profile-container {
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    /* Avatar stili */
+    .profile-sidebar {
+        text-align: center;
+    }
+
+    .avatar-wrapper {
+        position: relative;
+        display: inline-block;
+        padding: 5px;
+        border: 2px dashed var(--border);
+        border-radius: 50%;
+        margin-bottom: 15px;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        background: #f0f0f0;
+    }
+
+    .status-badge {
+        font-size: 0.7rem;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: rgba(26, 127, 55, 0.1);
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    /* Ma'lumotlar jadvali */
+    .profile-info {
+        background: #fcfcfc;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+    }
+
+    .info-row {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .info-row:last-child { border-bottom: none; }
+
+    .info-label {
+        width: 150px;
+        color: #656d76;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .info-value {
+        flex: 1;
+        font-size: 0.9rem;
+        color: var(--text);
+    }
+
+    /* Telegram Status */
+    .tg-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn-tg-disconnect {
+        color: #cf222e;
+        border: 1px solid #d0d7de;
+        background: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        transition: 0.2s;
+    }
+
+    .btn-tg-disconnect:hover {
+        background: #ffebe9;
+        border-color: #cf222e;
+    }
+
+    /* Action Buttons */
+    .profile-actions {
+        margin-top: 25px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-edit {
+        background: white;
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 8px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: 0.2s;
+    }
+
+    .btn-edit:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(9, 105, 218, 0.05);
+    }
+
+    @media (max-width: 768px) {
+        .profile-container {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+        .info-row {
+            flex-direction: column;
+            gap: 5px;
+        }
+        .info-label { width: 100%; }
+        .profile-actions { justify-content: center; }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    <h2>Mening profilim</h2>
+<div class="mb-4">
+    <span style="color: var(--primary); font-weight: 600;">user@lib:~$</span>
+    <span class="text-muted">cat user_profile.json</span>
+</div>
 
-    <div>
-        {% if profile.avatar %}
-            <img src="{{ profile.avatar.url }}" width="150" style="border-radius: 50%;">
-        {% endif %}
-
-        <p><strong>Username:</strong> {{ profile.user.username }}</p>
-        <p><strong>Ism:</strong> {{ profile.first_name|default:"Kiritilmagan" }}</p>
-        <p><strong>Familiya:</strong> {{ profile.last_name|default:"Kiritilmagan" }}</p>
-        <p><strong>Telefon:</strong> {{ profile.phone_number|default:"Kiritilmagan" }}</p>
-
-            <p><strong>Telegram ID:</strong>
-              {% if profile.telegram_id %}
-              {{ profile.telegram_id }} (Tasdiqlangan)
-
-              <form action="{% url 'disconnect_telegram' %}" method="POST" style="display:inline; margin-left: 10px;">
-                 {% csrf_token %}
-                    <button type="submit" onclick="return confirm('Telegramni uzmoqchimisiz?')"
-                    style="color: #dc3545; border: 1px solid #dc3545; background: none; border-radius: 4px; cursor: pointer; font-size: 12px; padding: 2px 5px;">
-                     O'chirish
-                  </button>
-                </form>
-
-                {% else %}
-               Kiritilmagan. <a href="{% url 'telegram_code' %}">Tasdiqlash uchun bosing</a>
-              {% endif %}
-            </p>
-
-        <p><strong>Bio:</strong> {{ profile.bio }}</p>
-        <p><strong>Tug'ilgan sana:</strong> {{ profile.birth_date }}</p>
-
-        <a href="{% url 'profile_edit' %}">Tahrirlash</a>
+<div class="profile-container">
+    <div class="profile-sidebar">
+        <div class="avatar-wrapper">
+            {% if profile.avatar %}
+                <img src="{{ profile.avatar.url }}" class="profile-avatar" alt="Avatar">
+            {% else %}
+                <img src="https://ui-avatars.com/api/?name={{ profile.user.username }}&background=f0f0f0&color=1a7f37" class="profile-avatar" alt="Default Avatar">
+            {% endif %}
+        </div>
+        <h3 class="h5 fw-bold mb-1">{{ profile.user.username }}</h3>
+        <span class="status-badge"><i class="bi bi-patch-check"></i> Faol foydalanuvchi</span>
     </div>
+
+    <div class="profile-main">
+        <div class="profile-info shadow-sm">
+            <div class="info-row">
+                <div class="info-label">Ism familiya</div>
+                <div class="info-value">
+                    {{ profile.first_name|default:"" }} {{ profile.last_name|default:""|default:"Ma'lumot yo'q" }}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Email</div>
+                <div class="info-value text-muted">{{ profile.user.email }}</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Telefon</div>
+                <div class="info-value">{{ profile.phone_number|default:"Kiritilmagan" }}</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Telegram status</div>
+                <div class="info-value tg-status">
+                    {% if profile.telegram_id %}
+                        <span class="text-success"><i class="bi bi-telegram"></i> {{ profile.telegram_id }} (Bog'langan)</span>
+                        <form action="{% url 'disconnect_telegram' %}" method="POST" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-tg-disconnect" onclick="return confirm('Telegramni uzmoqchimisiz?')">
+                                <i class="bi bi-x-circle"></i> Uzish
+                            </button>
+                        </form>
+                    {% else %}
+                        <span class="text-muted">Kiritilmagan</span>
+                        <a href="{% url 'telegram_code' %}" class="btn-tg-disconnect text-decoration-none" style="color: var(--accent);">
+                            <i class="bi bi-link-45deg"></i> Tasdiqlash
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Tug'ilgan sana</div>
+                <div class="info-value">{{ profile.birth_date|default:"Kiritilmagan" }}</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Biografiya</div>
+                <div class="info-value small text-muted">
+                    {{ profile.bio|default:"Bio ma'lumotlar hali kiritilmagan..." }}
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'profile_edit' %}" class="btn-edit">
+                <i class="bi bi-pencil-square"></i> Profilni tahrirlash
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}

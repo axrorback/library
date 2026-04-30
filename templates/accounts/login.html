@@ -1,16 +1,181 @@
 {% extends 'base.html' %}
 {% load socialaccount %}
-{% block title %}Kirish{% endblock %}
+
+{% block title %}Kirish | LibSystem{% endblock %}
+
+{% block extra_head %}
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    .terminal-command {
+        color: var(--primary);
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    /* Form stili */
+    form p {
+        margin-bottom: 15px;
+    }
+
+    form label {
+        display: block;
+        font-size: 0.8rem;
+        color: #656d76;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+
+    form input {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #fcfcfc;
+        font-family: var(--font-mono);
+        transition: 0.2s;
+    }
+
+    form input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 127, 55, 0.1);
+    }
+
+    .btn-login {
+        background-color: var(--primary);
+        color: white;
+        border: 1px solid rgba(27, 31, 36, 0.15);
+        padding: 10px;
+        border-radius: 6px;
+        font-family: var(--font-mono);
+        font-weight: 600;
+        width: 100%;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: 0.2s;
+    }
+
+    .btn-login:hover {
+        background-color: #1a6e31;
+    }
+
+    /* Ijtimoiy tarmoqlar uchun divider */
+    .divider {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 25px 0;
+        color: #8b949e;
+        font-size: 0.75rem;
+    }
+
+    .divider::before, .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .divider:not(:empty)::before { margin-right: .75em; }
+    .divider:not(:empty)::after { margin-left: .75em; }
+
+    /* Social Buttons */
+    .social-auth {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-social {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 8px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: white;
+        text-decoration: none;
+        color: var(--text);
+        font-size: 0.85rem;
+        transition: 0.2s;
+    }
+
+    .btn-social:hover {
+        background: #f6f8fa;
+        border-color: #8b949e;
+    }
+
+    .btn-github:hover { background: #24292f; color: white; }
+    .btn-google:hover { border-color: #4285F4; color: #4285F4; }
+
+    .auth-footer {
+        margin-top: 30px;
+        text-align: center;
+        font-size: 0.8rem;
+        border-top: 1px dashed var(--border);
+        padding-top: 20px;
+    }
+
+    .auth-footer a {
+        color: var(--accent);
+        text-decoration: none;
+    }
+
+    .forgot-pass {
+        display: block;
+        text-align: right;
+        font-size: 0.75rem;
+        margin-top: -10px;
+        margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-    <h2>Tizimga kirish</h2>
+<div class="login-container">
+    <span class="terminal-command">user@lib:~$ ssh-agent login.sh</span>
+
+    <h2 class="h4 mb-4 fw-bold">Tizimga kirish</h2>
+
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Kirish</button>
+
+        {% for field in form %}
+            <p>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <small class="text-danger" style="font-size: 0.7rem;">{{ field.errors.0 }}</small>
+                {% endif %}
+            </p>
+        {% endfor %}
+
+        <a href="{% url 'forgot_password' %}" class="forgot-pass text-muted">Parolni unutdingizmi?</a>
+
+        <button type="submit" class="btn-login">
+            <i class="bi bi-box-arrow-in-right"></i> Kirish
+        </button>
     </form>
-    <p>Google bilan kirish <a href="{% provider_login_url 'google' %}">Google bilan kir</a></p>
-    <p>Github bilan kir <a href="{% provider_login_url 'github' %}">Github bilan kir</a></p>
-    <p>Akkauntingiz yo'qmi? <a href="{% url 'register' %}">Ro'yxatdan o'tish</a></p>
-    <p>Parolni unutdingizmi? <a href="{% url 'forgot_password' %}" >Tiklash</a></p>
+
+    <div class="divider">yoki ijtimoiy tarmoqlar orqali</div>
+
+    <div class="social-auth">
+        <a href="{% provider_login_url 'google' %}" class="btn-social btn-google">
+            <i class="bi bi-google"></i> Google bilan kirish
+        </a>
+        <a href="{% provider_login_url 'github' %}" class="btn-social btn-github">
+            <i class="bi bi-github"></i> GitHub bilan kirish
+        </a>
+    </div>
+
+    <div class="auth-footer">
+        Akkauntingiz yo'qmi?
+        <a href="{% url 'register' %}" class="fw-bold">Ro'yxatdan o'tish</a>
+    </div>
+</div>
 {% endblock %}

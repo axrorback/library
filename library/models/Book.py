@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 import uuid
+from django_ckeditor_5.fields import CKEditor5Field
+
 class Book(models.Model):
     class Status(models.TextChoices):
         DRAFT = "draft", "Draft"
@@ -10,7 +12,7 @@ class Book(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
 
-    description = models.TextField(blank=True)
+    description = CKEditor5Field(config_name='default')
 
     author = models.CharField(max_length=255)
     publisher = models.CharField(max_length=255, blank=True)
