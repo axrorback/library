@@ -7,15 +7,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["127.0.0.1","localhost",".ngrok-free.app",]
+ALLOWED_HOSTS = ["127.0.0.1","localhost","library.coderboys.dev",]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://43048a2c02b2.ngrok-free.app",
+    "https://library.coderboys.dev",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -77,8 +78,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": "db",
+        "PORT": "5432",
     }
 }
 
@@ -147,8 +152,8 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 
-CELERY_BROKER_URL = 'redis://10.233.147.26:6379/0'
-CELERY_RESULT_BACKEND = 'redis://10.233.147.26:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
