@@ -14,17 +14,15 @@ def user_avatar_path(instance, filename):
     new_filename = f"{uuid.uuid4().hex[:10]}.{ext}"
     return f'avatars/{instance.user.id}/{new_filename}'
 
-username_regex = RegexValidator(regex=r'^[a-zA-Z]{5,20}$',message="Foydalanuvchi nomi 5-20 simvoldan iborat bo'lishi kerak.")
 phone_regex = RegexValidator(regex=r'^\+998\d{9}$',message="Telefon raqami '+998XXXXXXXXX' formatida bo'lishi kerak.")
 telegram_id_validator = RegexValidator(regex=r'^\d{5,15}$',message="Telegram ID faqat raqamlardan iborat bo'lishi kerak.")
-gmail_validator = RegexValidator(regex=r'^[a-zA-Z0-9._%+-]+@gmail\.com$',message="Faqat @gmail.com manzillari qabul qilinadi.")
 
 class CustomUser(AbstractUser):
     first_name = None
     last_name = None
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    username = models.CharField(max_length=20, unique=True, validators=[username_regex])
-    email = models.EmailField(unique=True, validators=[gmail_validator])
+    username = models.CharField(max_length=20, unique=True,)
+    email = models.EmailField(unique=True,)
 
     def __str__(self):
         return self.username
