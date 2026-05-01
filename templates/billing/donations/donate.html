@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% block title %}Kutubxonani qo'llab-quvvatlash |
-Digital-library{% endblock %} {% block extra_head %}
+{% extends 'base.html' %}
+{% block title %}Kutubxonani qo'llab-quvvatlash |Digital-library{% endblock %}
+{% block extra_head %}
 <style>
   .donate-wrapper {
     display: flex;
@@ -331,8 +332,7 @@ Digital-library{% endblock %} {% block extra_head %}
         {% for d in top_donators %}
         <li class="donator-item">
           <span class="donator-name">
-            <i class="bi bi-person-circle text-muted"></i> {{ d.user__username
-            }}
+            <i class="bi bi-person-circle text-muted"></i> {{ d.user__username}}
           </span>
           <span class="donator-amount">+{{ d.total }} so‘m</span>
         </li>

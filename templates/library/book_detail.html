@@ -1,5 +1,6 @@
-{% extends 'base.html' %} {% block title %}{{ book.title }} | Digital-library{%
-endblock %} {% block extra_head %}
+{% extends 'base.html' %}
+{% block title %}{{ book.title }} | Digital-library{%endblock %}
+{% block extra_head %}
 <style>
   /* Kitob Sahifasi Maxsus Stili */
   .book-wrapper {
@@ -328,8 +329,7 @@ endblock %} {% block extra_head %}
     <div class="col-lg-8 col-md-7">
       <!-- Terminal Breadcrumb -->
       <div class="terminal-breadcrumb">
-        <i class="bi bi-terminal-fill"></i> ~/digital-library/{{ category.slug
-        }}/<span class="text-dark">{{ book.slug }}</span>
+        <i class="bi bi-terminal-fill"></i> ~/digital-library/{{ category.slug}}/<span class="text-dark">{{ book.slug }}</span>
       </div>
 
       <nav aria-label="breadcrumb" class="mb-3">
