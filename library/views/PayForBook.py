@@ -22,12 +22,12 @@ def create_book_payment(request, book_id):
         return redirect("book_detail", category_slug=book.categories.first().slug, book_slug=book.slug)
 
 
-    callback_path = reverse("tspay_callback")
+    callback_path = reverse("payment_callback_book")
     callback_url = request.build_absolute_uri(callback_path)
     payload = {
         "amount": book.price,
         "purpose": "book_purchase",
-        "reference_id": f"book_purchase_{request.user.id}-{book.id}",
+        "reference_id": f"book_purchase_{book.id}",
         "user_id": str(request.user.id),
         "callback_url": callback_url,
     }
