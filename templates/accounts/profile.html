@@ -61,6 +61,10 @@ Digital-library{% endblock %} {% block extra_head %}
     overflow: hidden;
   }
 
+  .profile-main {
+    min-width: 0;
+  }
+
   .info-row {
     display: flex;
     padding: 16px 25px;
@@ -86,6 +90,8 @@ Digital-library{% endblock %} {% block extra_head %}
     font-size: 0.95rem;
     color: var(--text-main);
     font-family: var(--font-mono);
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .info-value.text-muted {
@@ -98,6 +104,7 @@ Digital-library{% endblock %} {% block extra_head %}
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+    min-width: 0;
   }
 
   .btn-tg-disconnect {
@@ -222,7 +229,9 @@ Digital-library{% endblock %} {% block extra_head %}
 </style>
 {% endblock %} {% block content %}
 <div class="mb-4">
-  <span style="color: var(--primary); font-weight: 600">user@digital-library:~$</span>
+  <span style="color: var(--primary); font-weight: 600"
+    >user@digital-library:~$</span
+  >
   <span class="text-muted">cat user_profile.json</span>
 </div>
 
@@ -250,11 +259,8 @@ Digital-library{% endblock %} {% block extra_head %}
       <div class="info-row">
         <div class="info-label">Ism familiya</div>
         <div class="info-value">
-          {% if profile.first_name or profile.last_name %}
-            {{ profile.first_name }} {{ profile.last_name }}
-          {% else %}
-            Ma'lumot yo'q
-          {% endif %}
+          {% if profile.first_name or profile.last_name %} {{ profile.first_name
+          }} {{ profile.last_name }} {% else %} Ma'lumot yo'q {% endif %}
         </div>
       </div>
 

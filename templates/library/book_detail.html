@@ -1,6 +1,5 @@
-{% extends 'base.html' %}
-{% block title %}{{ book.title }} | Digital-library{% endblock %}
-{% block extra_head %}
+{% extends 'base.html' %} {% block title %}{{ book.title }} | Digital-library{%
+endblock %} {% block extra_head %}
 <style>
   /* Kitob Sahifasi Maxsus Stili */
   .book-wrapper {
@@ -71,6 +70,7 @@
     font-size: 0.85rem;
     margin-bottom: 15px;
     color: var(--primary);
+    overflow-wrap: anywhere;
   }
 
   .book-title {
@@ -80,6 +80,7 @@
     line-height: 1.2;
     margin-bottom: 10px;
     letter-spacing: -1px;
+    overflow-wrap: anywhere;
   }
 
   .author-name {
@@ -90,6 +91,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    overflow-wrap: anywhere;
   }
 
   /* Spec Grid */
@@ -127,6 +129,7 @@
     font-size: 0.95rem;
     color: var(--text);
     font-family: var(--font-mono);
+    overflow-wrap: anywhere;
   }
 
   /* CKEditor Content Styling */
@@ -260,9 +263,14 @@
       padding: 20px 15px;
     }
     .spec-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 10px;
     }
+
+    .cover-wrapper {
+      max-width: 260px;
+    }
+
     .spec-item {
       padding: 12px;
     }
@@ -320,10 +328,8 @@
     <div class="col-lg-8 col-md-7">
       <!-- Terminal Breadcrumb -->
       <div class="terminal-breadcrumb">
-        <i class="bi bi-terminal-fill"></i> ~/digital-library/{{ category.slug }}/<span
-          class="text-dark"
-          >{{ book.slug }}</span
-        >
+        <i class="bi bi-terminal-fill"></i> ~/digital-library/{{ category.slug
+        }}/<span class="text-dark">{{ book.slug }}</span>
       </div>
 
       <nav aria-label="breadcrumb" class="mb-3">
