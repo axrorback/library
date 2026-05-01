@@ -39,6 +39,7 @@ python-dotenv==1.2.1
 redis==7.1.0
 requests==2.32.5
 s3transfer==0.17.0
+sib-api-v3-sdk==7.6.0
 six==1.17.0
 sqlparse==0.5.5
 tspay-client==0.2.5
