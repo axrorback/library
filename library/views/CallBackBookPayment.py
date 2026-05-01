@@ -9,17 +9,18 @@ from library.models import BookPurchase
 def payment_callback(request):
     if request.method != "POST":
         return JsonResponse({"error": "POST only"}, status=405)
+
     try:
         data = json.loads(request.body)
     except:
         return JsonResponse({"error": "invalid json"}, status=400)
 
-    order_id = data.get("order_id")
+    order_id = str(data.get("order_id"))
     status = data.get("status")
 
-    try:
-        purchase = BookPurchase.objects.get(id=order_id)
-    except BookPurchase.DoesNotExist:
+    purchase = BookPurchase.objects.filter(cheque_id=order_id).first()
+
+    if not purchase:
         return JsonResponse({"error": "not found"}, status=404)
 
     purchase.raw_status = data
@@ -27,7 +28,7 @@ def payment_callback(request):
     if status == "success":
         purchase.status = "paid"
         purchase.paid_at = now()
-    elif status == "failed":
+    else:
         purchase.status = "failed"
 
     purchase.save()
