@@ -1,170 +1,228 @@
 {% extends 'base.html' %}
-
-{% block title %}Emailni tasdiqlash | LibSystem{% endblock %}
-
+{% block title %}Emailni tasdiqlash | Digital-library{% endblock %}
 {% block extra_head %}
 <style>
+  .otp-container {
+    max-width: 450px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 15px;
+  }
+
+  .terminal-command {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 25px;
+    display: block;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+
+  .email-display {
+    background: #f6f8fa;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1.5px dashed var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    margin-bottom: 30px;
+    word-break: break-all;
+  }
+
+  /* OTP Input */
+  .otp-input {
+    letter-spacing: 10px;
+    font-size: 1.8rem;
+    text-align: center;
+    padding: 14px 15px;
+    width: 100%;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    background: #fcfcfc;
+    transition: all 0.3s ease;
+    min-height: 50px;
+    font-weight: 600;
+  }
+
+  .otp-input:hover {
+    border-color: #d0d7de;
+  }
+
+  .otp-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(26, 127, 55, 0.15);
+    background: #fff;
+  }
+
+  .otp-input::placeholder {
+    letter-spacing: 5px;
+    color: #d0d7de;
+  }
+
+  .btn-verify {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.3s ease;
+    min-height: 44px;
+    box-shadow: 0 2px 8px rgba(26, 127, 55, 0.15);
+  }
+
+  .btn-verify:hover {
+    background: #1a6e31;
+    box-shadow: 0 4px 16px rgba(26, 127, 55, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .btn-verify:active {
+    transform: translateY(0);
+  }
+
+  .btn-verify:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Footer actions */
+  .resend-box {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  #timer-text {
+    color: #656d76;
+    font-size: 0.9rem;
+  }
+
+  #timer {
+    color: var(--primary);
+    font-weight: bold;
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+  }
+
+  .change-email-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: white;
+    background: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+  }
+
+  .change-email-link:hover {
+    background: #1a6e31;
+    box-shadow: 0 4px 12px rgba(26, 127, 55, 0.2);
+  }
+
+  @media (max-width: 640px) {
     .otp-container {
-        max-width: 450px;
-        margin: 0 auto;
-        text-align: center;
+      padding: 0 12px;
+    }
+
+    .otp-input {
+      letter-spacing: 6px;
+      font-size: 1.5rem;
     }
 
     .terminal-command {
-        color: var(--primary);
-        font-weight: 600;
-        margin-bottom: 25px;
-        display: block;
-        text-align: left;
+      font-size: 0.8rem;
     }
 
-    .email-display {
-        background: #f6f8fa;
-        padding: 10px;
-        border-radius: 6px;
-        border: 1px dashed var(--border);
-        font-family: var(--font-mono);
-        font-size: 0.9rem;
-        margin-bottom: 25px;
+    h2 {
+      font-size: 1.1rem;
     }
-
-    /* OTP Input */
-    .otp-input {
-        letter-spacing: 8px;
-        font-size: 1.8rem;
-        text-align: center;
-        padding: 12px;
-        width: 100%;
-        border: 2px solid var(--border);
-        border-radius: 8px;
-        font-family: var(--font-mono);
-        background: #fcfcfc;
-        transition: 0.3s;
-    }
-
-    .otp-input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px rgba(26, 127, 55, 0.1);
-        background: #fff;
-    }
-
-    .btn-verify {
-        background: var(--primary);
-        color: white;
-        border: 1px solid rgba(27, 31, 36, 0.15);
-        padding: 12px;
-        border-radius: 6px;
-        font-weight: 600;
-        font-family: var(--font-mono);
-        width: 100%;
-        cursor: pointer;
-        margin-top: 20px;
-        transition: 0.2s;
-    }
-
-    .btn-verify:hover {
-        background: #1a6e31;
-    }
-
-    /* Footer actions */
-    .resend-box {
-        margin-top: 25px;
-        padding-top: 20px;
-        border-top: 1px solid var(--border);
-        font-size: 0.85rem;
-    }
-
-    #timer-text {
-        color: #656d76;
-    }
-
-    #timer {
-        color: #cf222e;
-        font-weight: bold;
-        font-family: var(--font-mono);
-    }
-
-    .change-email-link {
-        display: inline-block;
-        margin-top: 15px;
-        color: #cf222e;
-        text-decoration: none;
-        font-weight: 600;
-        padding: 5px 10px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        transition: 0.2s;
-    }
-
-    .change-email-link:hover {
-        background: #ffebe9;
-        border-color: #cf222e;
-    }
+  }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="otp-container">
-    <span class="terminal-command">user@lib:~$ ./verify-identity --method=otp</span>
+  <span class="terminal-command"
+    >user@digital-library:~$ ./verify-identity --method=otp</span
+  >
 
-    <h2 class="h4 mb-3 fw-bold">Emailni tasdiqlash</h2>
+  <h2 class="h4 mb-3 fw-bold">Emailni tasdiqlash</h2>
 
-    <div class="email-display">
-        <i class="bi bi-envelope-at"></i> <strong>{{ request.session.user_email }}</strong>
+  <div class="email-display">
+    <i class="bi bi-envelope-at"></i>
+    <strong>{{ request.session.user_email }}</strong>
+  </div>
+
+  <form method="POST" autocomplete="off">
+    {% csrf_token %}
+    <div class="mb-3">
+      <input
+        type="text"
+        name="otp_code"
+        class="otp-input"
+        placeholder="000000"
+        maxlength="6"
+        pattern="\d{6}"
+        required
+        autofocus
+      />
     </div>
+    <button type="submit" class="btn-verify shadow-sm">
+      <i class="bi bi-shield-check"></i> Tasdiqlash
+    </button>
+  </form>
 
-    <form method="POST" autocomplete="off">
-        {% csrf_token %}
-        <div class="mb-3">
-            <input type="text"
-                   name="otp_code"
-                   class="otp-input"
-                   placeholder="000000"
-                   maxlength="6"
-                   pattern="\d{6}"
-                   required
-                   autofocus>
-        </div>
-        <button type="submit" class="btn-verify shadow-sm">
-            <i class="bi bi-shield-check"></i> Tasdiqlash
-        </button>
-    </form>
+  <div class="resend-box">
+    <div id="resend-container">
+      <p id="timer-text">
+        <i class="bi bi-clock-history"></i> Kodni qayta yuborish:
+        <span id="timer">60</span>s
+      </p>
+      <a
+        href="{% url 'resend_otp' %}"
+        id="resend-link"
+        style="display: none"
+        class="btn btn-sm btn-outline-primary"
+      >
+        <i class="bi bi-arrow-clockwise"></i> Kodni qayta yuborish
+      </a>
 
-    <div class="resend-box">
-        <div id="resend-container">
-            <p id="timer-text">
-                <i class="bi bi-clock-history"></i> Kodni qayta yuborish: <span id="timer">60</span>s
-            </p>
-            <a href="{% url 'resend_otp' %}" id="resend-link" style="display: none;" class="btn btn-sm btn-outline-primary">
-                <i class="bi bi-arrow-clockwise"></i> Kodni qayta yuborish
-            </a>
-
-            <p class="mt-3 small text-muted">
-                Email manzilda xatolik bormi? <br>
-                <a href="{% url 'change_email' %}" class="change-email-link">
-                    <i class="bi bi-pencil-square"></i> Manzilni o'zgartirish
-                </a>
-            </p>
-        </div>
+      <p class="mt-3 small text-muted">
+        Email manzilda xatolik bormi? <br />
+        <a href="{% url 'change_email' %}" class="change-email-link">
+          <i class="bi bi-pencil-square"></i> Manzilni o'zgartirish
+        </a>
+      </p>
     </div>
+  </div>
 </div>
 
 <script>
-    let timeLeft = 60;
-    const timerElement = document.getElementById('timer');
-    const resendLink = document.getElementById('resend-link');
-    const timerText = document.getElementById('timer-text');
+  let timeLeft = 60;
+  const timerElement = document.getElementById('timer');
+  const resendLink = document.getElementById('resend-link');
+  const timerText = document.getElementById('timer-text');
 
-    const countdown = setInterval(function() {
-        timeLeft--;
-        if (timeLeft > 0) {
-            timerElement.innerText = timeLeft;
-        } else {
-            clearInterval(countdown);
-            timerText.style.display = 'none';
-            resendLink.style.display = 'inline-block';
-        }
-    }, 1000);
+  const countdown = setInterval(function () {
+    timeLeft--;
+    if (timeLeft > 0) {
+      timerElement.innerText = timeLeft;
+    } else {
+      clearInterval(countdown);
+      timerText.style.display = 'none';
+      resendLink.style.display = 'inline-block';
+    }
+  }, 1000);
 </script>
 {% endblock %}
