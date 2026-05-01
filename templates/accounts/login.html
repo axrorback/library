@@ -1,181 +1,262 @@
-{% extends 'base.html' %}
-{% load socialaccount %}
-
-{% block title %}Kirish | LibSystem{% endblock %}
-
-{% block extra_head %}
+{% extends 'base.html' %} {% load socialaccount %} {% block title %}Kirish |
+Digital-library{% endblock %} {% block extra_head %}
 <style>
+  .login-container {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .terminal-command {
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  /* Form stili */
+  form p {
+    margin-bottom: 15px;
+  }
+
+  form label {
+    display: block;
+    font-size: 0.8rem;
+    color: #656d76;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+
+  form input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.5px solid #e1e4e8;
+    border-radius: 8px;
+    background: #fcfcfc;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    min-height: 44px;
+  }
+
+  form input:hover {
+    border-color: #d0d7de;
+  }
+
+  form input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(26, 127, 55, 0.15);
+  }
+
+  form input::placeholder {
+    color: #8b949e;
+  }
+
+  .btn-login {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1rem;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    min-height: 44px;
+    box-shadow: 0 2px 8px rgba(26, 127, 55, 0.15);
+  }
+
+  .btn-login:hover {
+    background-color: #1a6e31;
+    box-shadow: 0 4px 16px rgba(26, 127, 55, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .btn-login:active {
+    transform: translateY(0);
+  }
+
+  .btn-login:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* Ijtimoiy tarmoqlar uchun divider */
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 25px 0;
+    color: #8b949e;
+    font-size: 0.75rem;
+  }
+
+  .divider::before,
+  .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .divider:not(:empty)::before {
+    margin-right: 0.75em;
+  }
+  .divider:not(:empty)::after {
+    margin-left: 0.75em;
+  }
+
+  /* Social Buttons */
+  .social-auth {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 44px;
+    font-weight: 500;
+    font-family: var(--font-mono);
+    background: white;
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.85rem;
+    transition: 0.2s;
+  }
+
+  .btn-social:hover {
+    background: #f6f8fa;
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .btn-social:active {
+    transform: scale(0.98);
+  }
+
+  .btn-github:hover {
+    background: #24292f;
+    color: white;
+    border-color: #24292f;
+  }
+  .btn-google:hover {
+    border-color: #4285f4;
+    color: #4285f4;
+    background: #f8f9fa;
+  }
+
+  .auth-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.85rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 20px;
+  }
+
+  .auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+
+  .auth-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .forgot-pass {
+    display: block;
+    text-align: right;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    color: #656d76;
+    text-decoration: none;
+    transition: 0.2s;
+  }
+
+  .forgot-pass:hover {
+    color: var(--primary);
+  }
+
+  @media (max-width: 640px) {
     .login-container {
-        max-width: 450px;
-        margin: 0 auto;
-    }
-
-    .terminal-command {
-        color: var(--primary);
-        font-weight: 600;
-        margin-bottom: 20px;
-        display: block;
-    }
-
-    /* Form stili */
-    form p {
-        margin-bottom: 15px;
+      padding: 0 12px;
     }
 
     form label {
-        display: block;
-        font-size: 0.8rem;
-        color: #656d76;
-        margin-bottom: 5px;
-        font-weight: 600;
+      font-size: 0.85rem;
     }
 
     form input {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: #fcfcfc;
-        font-family: var(--font-mono);
-        transition: 0.2s;
+      font-size: 16px;
     }
 
-    form input:focus {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 3px rgba(26, 127, 55, 0.1);
-    }
-
-    .btn-login {
-        background-color: var(--primary);
-        color: white;
-        border: 1px solid rgba(27, 31, 36, 0.15);
-        padding: 10px;
-        border-radius: 6px;
-        font-family: var(--font-mono);
-        font-weight: 600;
-        width: 100%;
-        cursor: pointer;
-        margin-top: 10px;
-        transition: 0.2s;
-    }
-
-    .btn-login:hover {
-        background-color: #1a6e31;
-    }
-
-    /* Ijtimoiy tarmoqlar uchun divider */
-    .divider {
-        display: flex;
-        align-items: center;
-        text-align: center;
-        margin: 25px 0;
-        color: #8b949e;
-        font-size: 0.75rem;
-    }
-
-    .divider::before, .divider::after {
-        content: '';
-        flex: 1;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .divider:not(:empty)::before { margin-right: .75em; }
-    .divider:not(:empty)::after { margin-left: .75em; }
-
-    /* Social Buttons */
-    .social-auth {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
+    .btn-login,
     .btn-social {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 8px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: white;
-        text-decoration: none;
-        color: var(--text);
-        font-size: 0.85rem;
-        transition: 0.2s;
+      font-size: 0.9rem;
     }
 
-    .btn-social:hover {
-        background: #f6f8fa;
-        border-color: #8b949e;
+    .terminal-command {
+      font-size: 0.75rem;
     }
-
-    .btn-github:hover { background: #24292f; color: white; }
-    .btn-google:hover { border-color: #4285F4; color: #4285F4; }
-
-    .auth-footer {
-        margin-top: 30px;
-        text-align: center;
-        font-size: 0.8rem;
-        border-top: 1px dashed var(--border);
-        padding-top: 20px;
-    }
-
-    .auth-footer a {
-        color: var(--accent);
-        text-decoration: none;
-    }
-
-    .forgot-pass {
-        display: block;
-        text-align: right;
-        font-size: 0.75rem;
-        margin-top: -10px;
-        margin-bottom: 15px;
-    }
+  }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="login-container">
-    <span class="terminal-command">user@lib:~$ ssh-agent login.sh</span>
+  <span class="terminal-command">user@digital-library:~$ ssh-agent login.sh</span>
 
-    <h2 class="h4 mb-4 fw-bold">Tizimga kirish</h2>
+  <h2 class="h4 mb-4 fw-bold">Tizimga kirish</h2>
 
-    <form method="POST">
-        {% csrf_token %}
+  <form method="POST">
+    {% csrf_token %} {% for field in form %}
+    <p>
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }} {% if field.errors %}
+      <small class="text-danger" style="font-size: 0.7rem"
+        >{{ field.errors.0 }}</small
+      >
+      {% endif %}
+    </p>
+    {% endfor %}
 
-        {% for field in form %}
-            <p>
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                    <small class="text-danger" style="font-size: 0.7rem;">{{ field.errors.0 }}</small>
-                {% endif %}
-            </p>
-        {% endfor %}
+    <a href="{% url 'forgot_password' %}" class="forgot-pass text-muted"
+      >Parolni unutdingizmi?</a
+    >
 
-        <a href="{% url 'forgot_password' %}" class="forgot-pass text-muted">Parolni unutdingizmi?</a>
+    <button type="submit" class="btn-login">
+      <i class="bi bi-box-arrow-in-right"></i> Kirish
+    </button>
+  </form>
 
-        <button type="submit" class="btn-login">
-            <i class="bi bi-box-arrow-in-right"></i> Kirish
-        </button>
-    </form>
+  <div class="divider">yoki ijtimoiy tarmoqlar orqali</div>
 
-    <div class="divider">yoki ijtimoiy tarmoqlar orqali</div>
+  <div class="social-auth">
+    <a href="{% provider_login_url 'google' %}" class="btn-social btn-google">
+      <i class="bi bi-google"></i> Google bilan kirish
+    </a>
+    <a href="{% provider_login_url 'github' %}" class="btn-social btn-github">
+      <i class="bi bi-github"></i> GitHub bilan kirish
+    </a>
+  </div>
 
-    <div class="social-auth">
-        <a href="{% provider_login_url 'google' %}" class="btn-social btn-google">
-            <i class="bi bi-google"></i> Google bilan kirish
-        </a>
-        <a href="{% provider_login_url 'github' %}" class="btn-social btn-github">
-            <i class="bi bi-github"></i> GitHub bilan kirish
-        </a>
-    </div>
-
-    <div class="auth-footer">
-        Akkauntingiz yo'qmi?
-        <a href="{% url 'register' %}" class="fw-bold">Ro'yxatdan o'tish</a>
-    </div>
+  <div class="auth-footer">
+    Akkauntingiz yo'qmi?
+    <a href="{% url 'register' %}" class="fw-bold">Ro'yxatdan o'tish</a>
+  </div>
 </div>
 {% endblock %}
