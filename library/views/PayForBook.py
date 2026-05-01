@@ -1,6 +1,4 @@
 from django.shortcuts import get_object_or_404, redirect
-from django.conf import settings
-from django.utils import timezone
 from django.urls import reverse
 from tspay.exceptions import TsPayError
 from django.contrib.auth.decorators import login_required
