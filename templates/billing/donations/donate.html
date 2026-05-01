@@ -1,242 +1,381 @@
-{% extends 'base.html' %}
-
-{% block title %}Kutubxonani qo'llab-quvvatlash | Digital-library{% endblock %}
-
-{% block extra_head %}
+{% extends 'base.html' %} {% block title %}Kutubxonani qo'llab-quvvatlash |
+Digital-library{% endblock %} {% block extra_head %}
 <style>
-    .donate-wrapper {
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 50px 20px;
-        min-height: 80vh;
-    }
+  .donate-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 50px 20px;
+    min-height: 80vh;
+  }
 
+  .donate-card {
+    background: #ffffff;
+    max-width: 480px;
+    width: 100%;
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  }
+
+  .donate-terminal-line {
+    font-family: var(--font-mono);
+    color: var(--primary);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .title-main {
+    font-size: 1.75rem;
+    font-weight: 800;
+    text-align: center;
+    color: var(--text);
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #57606a;
+    font-size: 0.95rem;
+    margin-bottom: 35px;
+    line-height: 1.5;
+  }
+
+  /* Form dizayni */
+  .donate-form {
+    margin-bottom: 40px;
+  }
+
+  .quick-amounts {
+    margin-bottom: 20px;
+  }
+
+  .quick-amounts-title {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #57606a;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+
+  .quick-amount-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+
+  .amount-chip {
+    border: 1px solid rgba(9, 105, 218, 0.18);
+    background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+    color: var(--text);
+    border-radius: 999px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      border-color 0.2s ease;
+    box-shadow: 0 6px 16px rgba(9, 105, 218, 0.06);
+    width: 100%;
+  }
+
+  .amount-chip:hover {
+    transform: translateY(-1px);
+    border-color: rgba(9, 105, 218, 0.35);
+    box-shadow: 0 10px 20px rgba(9, 105, 218, 0.12);
+  }
+
+  .amount-chip.is-active {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+  }
+
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .input-wrapper input {
+    width: 100%;
+    padding: 14px 18px;
+    background: #f6f8fa;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .input-wrapper input:focus {
+    border-color: var(--accent);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+  }
+
+  .currency-label {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8b949e;
+    font-weight: 600;
+    font-family: var(--font-mono);
+  }
+
+  .btn-donate {
+    width: 100%;
+    background-color: var(--accent);
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-donate:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(9, 105, 218, 0.3);
+  }
+
+  .total-badge {
+    background: #f0f7ff;
+    border: 1px dashed rgba(9, 105, 218, 0.3);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .total-badge span {
+    display: block;
+    font-size: 0.8rem;
+    color: #57606a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+  }
+
+  .total-badge strong {
+    font-size: 1.5rem;
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+
+  /* Top Donators List */
+  .donators-section h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .donators-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .donator-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f2f5;
+  }
+
+  .donator-item:last-child {
+    border: none;
+  }
+
+  .donator-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .donator-amount {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: #1a7f37;
+    font-size: 0.9rem;
+  }
+
+  .alert-error {
+    background: #fff1f0;
+    border: 1px solid #ffa39e;
+    color: #cf1322;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+
+  .donator-name,
+  .donator-amount,
+  .subtitle {
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 480px) {
     .donate-card {
-        background: #ffffff;
-        max-width: 480px;
-        width: 100%;
-        padding: 40px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      padding: 28px 18px;
     }
 
-    .donate-terminal-line {
-        font-family: var(--font-mono);
-        color: var(--primary);
-        font-size: 0.85rem;
-        text-align: center;
-        margin-bottom: 10px;
+    .quick-amount-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .amount-chip {
+      padding: 11px 12px;
+      font-size: 0.9rem;
     }
 
     .title-main {
-        font-size: 1.75rem;
-        font-weight: 800;
-        text-align: center;
-        color: var(--text);
-        margin-bottom: 10px;
-        letter-spacing: -0.5px;
-    }
-
-    .subtitle {
-        text-align: center;
-        color: #57606a;
-        font-size: 0.95rem;
-        margin-bottom: 35px;
-        line-height: 1.5;
-    }
-
-    /* Form dizayni */
-    .donate-form {
-        margin-bottom: 40px;
-    }
-
-    .input-wrapper {
-        position: relative;
-        margin-bottom: 20px;
+      font-size: 1.5rem;
     }
 
     .input-wrapper input {
-        width: 100%;
-        padding: 14px 18px;
-        background: #f6f8fa;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-family: var(--font-mono);
-        font-weight: 600;
-        outline: none;
-        transition: all 0.2s;
+      font-size: 16px;
     }
-
-    .input-wrapper input:focus {
-        border-color: var(--accent);
-        background: #ffffff;
-        box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
-    }
-
-    .currency-label {
-        position: absolute;
-        right: 18px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #8b949e;
-        font-weight: 600;
-        font-family: var(--font-mono);
-    }
-
-    .btn-donate {
-        width: 100%;
-        background-color: var(--accent);
-        color: white;
-        padding: 15px;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: 0.3s;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .btn-donate:hover {
-        filter: brightness(1.1);
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(9, 105, 218, 0.3);
-    }
-
-    .total-badge {
-        background: #f0f7ff;
-        border: 1px dashed rgba(9, 105, 218, 0.3);
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        margin-bottom: 40px;
-    }
-
-    .total-badge span {
-        display: block;
-        font-size: 0.8rem;
-        color: #57606a;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 5px;
-    }
-
-    .total-badge strong {
-        font-size: 1.5rem;
-        color: var(--accent);
-        font-family: var(--font-mono);
-    }
-
-    /* Top Donators List */
-    .donators-section h3 {
-        font-size: 1.1rem;
-        font-weight: 700;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .donators-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    .donator-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px 0;
-        border-bottom: 1px solid #f0f2f5;
-    }
-
-    .donator-item:last-child { border: none; }
-
-    .donator-name {
-        font-weight: 600;
-        font-size: 0.95rem;
-        color: var(--text);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .donator-amount {
-        font-family: var(--font-mono);
-        font-weight: 700;
-        color: #1a7f37;
-        font-size: 0.9rem;
-    }
-
-    .alert-error {
-        background: #fff1f0;
-        border: 1px solid #ffa39e;
-        color: #cf1322;
-        padding: 12px;
-        border-radius: 8px;
-        font-size: 0.85rem;
-        margin-bottom: 20px;
-    }
+  }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <div class="donate-wrapper">
-    <div class="donate-card">
-        <div class="donate-terminal-line">
-            <i class="bi bi-heart-fill"></i> sudo support --digital-library
-        </div>
-
-        <h1 class="title-main">Hissa qo‘shing</h1>
-        <p class="subtitle">Sizning yordamingiz kutubxonamizdagi resurslarni ko'paytirish va server harajatlarini qoplashga yordam beradi.</p>
-
-        {% if messages %}
-            {% for m in messages %}
-                <div class="alert-error">
-                    <i class="bi bi-exclamation-circle-fill"></i> {{ m }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="post" class="donate-form">
-            {% csrf_token %}
-            <div class="input-wrapper">
-                <input type="number" name="amount" min="1000" step="500" placeholder="Summani kiriting..." required>
-                <span class="currency-label">so'm</span>
-            </div>
-            <button type="submit" class="btn-donate">
-                <i class="bi bi-rocket-takeoff-fill"></i> Hissa qo'shish
-            </button>
-        </form>
-        <div class="total-badge">
-            <span><i class="bi bi-graph-up-arrow"></i> Jami yig‘ilgan summa:</span>
-            <strong>{{ total_amount|default:"0" }} so‘m</strong>
-        </div>
-
-        <div class="donators-section">
-            <h3><i class="bi bi-trophy text-warning"></i> Top donatorlar</h3>
-            <ul class="donators-list">
-                {% for d in top_donators %}
-                    <li class="donator-item">
-                        <span class="donator-name">
-                            <i class="bi bi-person-circle text-muted"></i> {{ d.user__username }}
-                        </span>
-                        <span class="donator-amount">+{{ d.total }} so‘m</span>
-                    </li>
-                {% empty %}
-                    <li class="text-center py-3 text-muted small">
-                        Hali hech kim hissa qo'shmagan. Birinchi bo'ling!
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+  <div class="donate-card">
+    <div class="donate-terminal-line">
+      <i class="bi bi-heart-fill"></i> sudo support --digital-library
     </div>
+
+    <h1 class="title-main">Hissa qo‘shing</h1>
+    <p class="subtitle">
+      Sizning yordamingiz kutubxonamizdagi resurslarni ko'paytirish va server
+      harajatlarini qoplashga yordam beradi.
+    </p>
+
+    {% if messages %} {% for m in messages %}
+    <div class="alert-error">
+      <i class="bi bi-exclamation-circle-fill"></i> {{ m }}
+    </div>
+    {% endfor %} {% endif %}
+
+    <form method="post" class="donate-form">
+      {% csrf_token %}
+      <div class="quick-amounts">
+        <span class="quick-amounts-title">Tez summa tanlang</span>
+        <div
+          class="quick-amount-grid"
+          role="group"
+          aria-label="Tez summa tanlash"
+        >
+          <button type="button" class="amount-chip" data-amount="1000">
+            1 000 so'm
+          </button>
+          <button type="button" class="amount-chip" data-amount="2000">
+            2 000 so'm
+          </button>
+          <button type="button" class="amount-chip" data-amount="5000">
+            5 000 so'm
+          </button>
+          <button type="button" class="amount-chip" data-amount="10000">
+            10 000 so'm
+          </button>
+        </div>
+      </div>
+      <div class="input-wrapper">
+        <input
+          id="donation-amount"
+          type="number"
+          name="amount"
+          min="1000"
+          step="500"
+          placeholder="Summani kiriting..."
+          required
+        />
+        <span class="currency-label">so'm</span>
+      </div>
+      <button type="submit" class="btn-donate">
+        <i class="bi bi-rocket-takeoff-fill"></i> Hissa qo'shish
+      </button>
+    </form>
+    <div class="total-badge">
+      <span><i class="bi bi-graph-up-arrow"></i> Jami yig‘ilgan summa:</span>
+      <strong>{{ total_amount|default:"0" }} so‘m</strong>
+    </div>
+
+    <div class="donators-section">
+      <h3><i class="bi bi-trophy text-warning"></i> Top donatorlar</h3>
+      <ul class="donators-list">
+        {% for d in top_donators %}
+        <li class="donator-item">
+          <span class="donator-name">
+            <i class="bi bi-person-circle text-muted"></i> {{ d.user__username
+            }}
+          </span>
+          <span class="donator-amount">+{{ d.total }} so‘m</span>
+        </li>
+        {% empty %}
+        <li class="text-center py-3 text-muted small">
+          Hali hech kim hissa qo'shmagan. Birinchi bo'ling!
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 </div>
+
+<script>
+  (() => {
+    const amountInput = document.getElementById('donation-amount');
+    const chips = document.querySelectorAll('.amount-chip');
+
+    if (!amountInput || !chips.length) {
+      return;
+    }
+
+    const setActiveChip = (activeChip) => {
+      chips.forEach((chip) =>
+        chip.classList.toggle('is-active', chip === activeChip)
+      );
+    };
+
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        amountInput.value = chip.dataset.amount;
+        amountInput.focus();
+        setActiveChip(chip);
+      });
+    });
+
+    amountInput.addEventListener('input', () => {
+      const currentValue = amountInput.value;
+      const matchedChip = Array.from(chips).find(
+        (chip) => chip.dataset.amount === currentValue
+      );
+      setActiveChip(matchedChip || null);
+    });
+  })();
+</script>
 {% endblock %}
