@@ -9,8 +9,8 @@ import requests
 
 
 @login_required
-def create_book_payment(request, book_id):
-    book = get_object_or_404(Book, id=book_id, is_active=True)
+def create_book_payment(request, id):
+    book = get_object_or_404(Book, id=id, is_active=True)
 
     if book.is_free:
         return redirect("book_detail", category_slug=book.categories.first().slug, book_slug=book.slug)
