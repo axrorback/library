@@ -25,7 +25,7 @@ def create_book_payment(request, id):
     callback_path = reverse("payment_callback_book")
     callback_url = request.build_absolute_uri(callback_path)
     payload = {
-        "amount": book.price,
+        "amount": str(book.price),
         "purpose": "book_purchase",
         "reference_id": f"book_purchase_{book.id}",
         "user_id": str(request.user.id),
