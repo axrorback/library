@@ -2,10 +2,11 @@ from django.shortcuts import get_object_or_404, redirect
 from django.conf import settings
 from django.utils import timezone
 from django.urls import reverse
-from tspay import TsPayClient
 from tspay.exceptions import TsPayError
 from django.contrib.auth.decorators import login_required
 from library.models import Book, BookPurchase
+import requests
+
 
 @login_required
 def create_book_payment(request, book_id):
@@ -20,29 +21,34 @@ def create_book_payment(request, book_id):
     if not book.price:
         return redirect("book_detail", category_slug=book.categories.first().slug, book_slug=book.slug)
 
-    client = TsPayClient()
 
     callback_path = reverse("tspay_callback")
     callback_url = request.build_absolute_uri(callback_path)
-
+    payload = {
+        "amount": book.price,
+        "purpose": "book_purchase",
+        "reference_id": f"book_purchase_{request.user.id}-{book.id}",
+        "user_id": str(request.user.id),
+        "callback_url": callback_url,
+    }
     try:
-        tx = client.create_transaction(
-            amount=float(book.price),
-            redirect_url=callback_url,
-            comment=f"BookPurchase User {request.user.username} Book {book.title}",
-            access_token=settings.TSPAY_SHOP_ACCESS_TOKEN,
+        res = requests.post(
+            "https://pay.axror.tech/payment/create/",
+            json=payload,
+            timeout=15
         )
+        data = res.json()
 
         BookPurchase.objects.create(
             user=request.user,
             book=book,
             amount=book.price,
-            cheque_id=tx.get("cheque_id"),
-            payment_url=tx.get("payment_url", ""),
+            cheque_id=str(data.get("order_id")),
+            payment_url=data.get("payment_url", ""),
             status=BookPurchase.Status.PENDING,
         )
 
-        return redirect(tx["payment_url"])
+        return redirect(data["payment_url"])
 
     except TsPayError as e:
         return redirect("book_detail", category_slug=book.categories.first().slug, book_slug=book.slug)

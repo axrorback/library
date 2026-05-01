@@ -11,17 +11,13 @@ class BookPurchase(models.Model):
         CANCELED = "canceled", "Canceled"
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="book_purchases")
     book = models.ForeignKey("library.Book", on_delete=models.CASCADE, related_name="purchases")
-
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     raw_status = models.JSONField(default=dict, blank=True)
     cheque_id = models.CharField(max_length=128, unique=True)   # TsPay transaction id
     payment_url = models.URLField(blank=True)
-
     status = models.CharField(max_length=20, choices=Status, default=Status.PENDING)
-
     created_at = models.DateTimeField(auto_now_add=True)
     paid_at = models.DateTimeField(null=True, blank=True)
 
