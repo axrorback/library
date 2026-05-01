@@ -1,257 +1,482 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="uz">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <title>{% block title %}Digital Lib | Management System{% endblock title %}</title>
+    <title>
+      {% block title %}Digital-library | Management System{% endblock title %}
+    </title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
 
-  <style>
-    :root {
-      --bg: #f6f8fa; /* Ochiq kulrang fon */
-      --card-bg: #ffffff; /* Sof oq oyna */
-      --text: #24292f; /* To'q kulrang matn */
-      --primary: #1a7f37; /* Tizim yashil rangi */
-      --accent: #0969da; /* Havorang linklar */
-      --border: #d0d7de; /* Chegaralar uchun */
-      --terminal-head: #f3f4f6; /* Terminal sarlavhasi */
-      --font-mono: 'JetBrains Mono', monospace;
-    }
+    <style>
+      :root {
+        --bg: #f3f5f7;
+        --glass-bg: rgba(255, 255, 255, 0.82);
+        --glass-border: rgba(208, 215, 222, 0.65);
+        --text-main: #1c1e21;
+        --text-muted: #65676b;
+        --primary: #1a7f37; /* GitHub Green */
+        --primary-hover: #166e30;
+        --accent: #0969da;
+        --danger: #d1242f;
+        --border-color: #d0d7de;
+        --border: var(--border-color);
+        --text: var(--text-main);
+        --terminal-dark: #24292f;
+        --font-mono: 'JetBrains Mono', monospace;
+        --font-sans: 'Inter', sans-serif;
+      }
 
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-mono);
-      line-height: 1.6;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+      body {
+        background-color: var(--bg);
+        background-image:
+          radial-gradient(at 0% 0%, rgba(26, 127, 55, 0.045) 0, transparent 46%),
+          radial-gradient(at 100% 0%, rgba(9, 105, 218, 0.04) 0, transparent 42%);
+        color: var(--text-main);
+        font-family: var(--font-sans);
+        line-height: 1.6;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
 
-    /* Navbar */
-    .custom-nav {
-      background: rgba(255, 255, 255, 0.9);
-      border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      padding: 0.7rem 0;
-    }
+      /* Navbar */
+      .custom-nav {
+        background: var(--glass-bg);
+        border-bottom: 1px solid var(--glass-border);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 0.8rem 0;
+        transition: all 0.3s ease;
+      }
 
-    .navbar-brand {
-      font-weight: 600;
-      color: var(--primary) !important;
-      font-size: 1.1rem;
-      letter-spacing: -0.5px;
-    }
+      .navbar-brand {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--primary) !important;
+        font-size: 1.2rem;
+        letter-spacing: -0.5px;
+      }
 
-    .nav-link {
-      color: var(--text) !important;
-      font-size: 0.85rem;
-      padding: 0.5rem 1rem !important;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-    }
+      .nav-link {
+        font-family: var(--font-mono);
+        color: var(--text-main) !important;
+        font-size: 0.88rem;
+        font-weight: 500;
+        padding: 0.6rem 1.1rem !important;
+        border-radius: 8px;
+        transition: 0.2s all ease;
+        margin: 0 2px;
+      }
 
-    .nav-link:hover, .nav-link.active {
-      color: var(--primary) !important;
-      background: rgba(26, 127, 55, 0.1);
-    }
+      .nav-link:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
 
-    /* Django Messages (Alerts) */
-    .messages-container {
-      margin-bottom: 1.5rem;
-    }
-    .msg-item {
-      padding: 10px 15px;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      margin-bottom: 8px;
-      border: 1px solid;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .msg-item.success { background: #dafbe1; color: #1a7f37; border-color: #bee5c5; }
-    .msg-item.error { background: #ffebe9; color: #cf222e; border-color: #f1d0d1; }
+      .nav-link:focus-visible,
+      .btn-primary-custom:focus-visible,
+      .logout-btn:focus-visible,
+      .navbar-toggler:focus-visible {
+        outline: 3px solid rgba(26, 127, 55, 0.22);
+        outline-offset: 2px;
+      }
 
-    /* Content Wrapper */
-    .content-wrapper {
-      max-width: 950px;
-      margin: 100px auto 50px;
-      padding: 0 20px;
-      flex-grow: 1;
-    }
+      /* Active Link logic */
+      .nav-link.active-link {
+        color: var(--primary) !important;
+        background: rgba(26, 127, 55, 0.1);
+        font-weight: 600;
+      }
 
-    /* Terminal Window Style */
-    .terminal-window {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(140, 149, 159, 0.15);
-    }
+      /* Messages */
+      .alert {
+        border-radius: 12px;
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+        font-size: 0.9rem;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
 
-    .terminal-header {
-      background: var(--terminal-head);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
+      /* Content Wrapper */
+      .content-wrapper {
+        max-width: 1000px;
+        margin: 120px auto 60px;
+        padding: 0 20px;
+        flex-grow: 1;
+        width: 100%;
+      }
 
-    .terminal-dots { display: flex; gap: 8px; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
-    .dot-1 { background: #ff5f57; border: 1px solid #e1483f; }
-    .dot-2 { background: #febc2e; border: 1px solid #e0a41d; }
-    .dot-3 { background: #28c840; border: 1px solid #1fa533; }
+      /* Terminal Window */
+      .terminal-window {
+        background: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease;
+      }
 
-    .path-display {
-      font-size: 0.75rem;
-      color: #656d76;
-      font-weight: 400;
-    }
+      .terminal-header {
+        background: #f6f8fa;
+        padding: 14px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+      }
 
-    .terminal-body {
-      padding: 40px;
-    }
+      .terminal-dots {
+        display: flex;
+        gap: 8px;
+      }
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .dot-1 {
+        background: #ff5f57;
+        box-shadow: 0 0 5px rgba(255, 95, 87, 0.4);
+      }
+      .dot-2 {
+        background: #febc2e;
+        box-shadow: 0 0 5px rgba(254, 188, 46, 0.4);
+      }
+      .dot-3 {
+        background: #28c840;
+        box-shadow: 0 0 5px rgba(40, 200, 64, 0.4);
+      }
 
-    /* Buttons & Actions */
-    .logout-form { display: inline; }
-    .logout-btn {
-      background: none;
-      border: 1px solid transparent;
-      color: #cf222e;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      transition: 0.2s;
-    }
-    .logout-btn:hover {
-      background: #ffebe9;
-      border-color: #f1d0d1;
-    }
+      .path-display {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        background: rgba(0, 0, 0, 0.04);
+        padding: 4px 12px;
+        border-radius: 20px;
+      }
 
-    /* Footer */
-    .footer {
-      text-align: center;
-      padding: 30px;
-      background: white;
-      border-top: 1px solid var(--border);
-      font-size: 0.75rem;
-      color: #656d76;
-    }
+      .terminal-body {
+        padding: 45px;
+      }
 
-    .status-online { color: var(--primary); font-weight: bold; }
+      input,
+      textarea,
+      select,
+      button {
+        font: inherit;
+      }
 
-    @media (max-width: 768px) {
-      .terminal-body { padding: 25px; }
-      .path-display { display: none; }
-      .content-wrapper { margin-top: 85px; }
-    }
-  </style>
-  {% block extra_head %}{% endblock %}
-</head>
-<body>
+      img {
+        max-width: 100%;
+      }
 
-  <nav class="navbar navbar-expand-lg fixed-top custom-nav">
-    <div class="container">
-      <a class="navbar-brand" href="/">
-        <i class="bi bi-terminal-split"></i> lib_sys:~$
-      </a>
+      /* Custom Buttons */
+      .btn-primary-custom {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+      .btn-primary-custom:hover {
+        background: var(--primary-hover);
+        box-shadow: 0 4px 12px rgba(26, 127, 55, 0.2);
+      }
 
-      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#libNavbar">
-        <span class="bi bi-list fs-3"></span>
-      </button>
+      .logout-btn {
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--danger);
+        padding: 6px 14px;
+        border-radius: 8px;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .logout-btn:hover {
+        background: rgba(209, 36, 47, 0.08);
+      }
 
-      <div class="collapse navbar-collapse" id="libNavbar">
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item"><a class="nav-link" href="/"><i class="bi bi-house"></i> bosh_sahifa</a></li>
+      /* Footer */
+      .footer {
+        background: #ffffff;
+        border-top: 1px solid var(--border-color);
+        padding: 40px 0;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
 
-          {% if user.is_authenticated %}
-            <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}"><i class="bi bi-collection"></i> bo'limlar</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'profile_view' %}"><i class="bi bi-person-badge"></i> profil</a></li>
-            <li class="nav-item"><a class="nav-link" href="{% url 'donate' %}"><i class="bi bi-book"></i> donate</a></li>
-            <li class="nav-item ms-lg-2">
-                <form action="{% url 'logout' %}" method="post" class="logout-form">
-                    {% csrf_token %}
-                    <button type="submit" class="logout-btn"><i class="bi bi-power"></i> chiqish</button>
-                </form>
+      .status-online {
+        color: var(--primary);
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--primary);
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(0.95);
+          opacity: 0.7;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .terminal-body {
+          padding: 30px 20px;
+        }
+        .path-display {
+          display: none;
+        }
+        .content-wrapper {
+          margin-top: 100px;
+        }
+        .nav-link {
+          padding: 0.5rem 0.8rem !important;
+          font-size: 0.8rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .navbar-brand {
+          font-size: 1rem;
+        }
+        .nav-link {
+          padding: 0.4rem 0.6rem !important;
+          font-size: 0.75rem;
+        }
+        .terminal-body {
+          padding: 20px 15px;
+        }
+        .content-wrapper {
+          margin: 80px auto 40px;
+          padding: 0 12px;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        p {
+          font-size: 0.95rem;
+        }
+      }
+    </style>
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top custom-nav">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <i class="bi bi-terminal-split me-2"></i>
+          <span>Digital-library</span>
+        </a>
+
+        <button
+          class="navbar-toggler border-0 shadow-none"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#libNavbar"
+          aria-controls="libNavbar"
+          aria-expanded="false"
+          aria-label="Navigatsiyani ochish"
+        >
+          <i class="bi bi-list fs-2"></i>
+        </button>
+
+        <div class="collapse navbar-collapse" id="libNavbar">
+          <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.path == '/' %}active-link{% endif %}"
+                href="/"
+              >
+                <i class="bi bi-house-door me-1"></i> bosh_sahifa
+              </a>
             </li>
-          {% else %}
-            <li class="nav-item"><a class="nav-link text-primary fw-bold" href="{% url 'register' %}"><i class="bi bi-key"></i> kirish_tizimga</a></li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-  </nav>
 
-  <main class="content-wrapper">
-
-    {% if messages %}
-        <div class="messages-container">
-            {% for message in messages %}
-                <div class="msg-item {{ message.tags }}">
-                   {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill"></i>
-                   {% else %}<i class="bi bi-exclamation-triangle-fill"></i>{% endif %}
-                   {{ message }}
-                </div>
-            {% endfor %}
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.resolver_match.url_name == 'category_list' and request.path != '/' %}active-link{% endif %}"
+                href="{% url 'category_list' %}"
+              >
+                <i class="bi bi-grid me-1"></i> bo'limlar
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.resolver_match.url_name == 'profile_view' or request.resolver_match.url_name == 'profile_edit' %}active-link{% endif %}"
+                href="{% url 'profile_view' %}"
+              >
+                <i class="bi bi-person me-1"></i> profil
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link {% if request.resolver_match.url_name == 'donate' %}active-link{% endif %}"
+                href="{% url 'donate' %}"
+              >
+                <i class="bi bi-heart me-1"></i> donate
+              </a>
+            </li>
+            <li class="nav-item ms-lg-2">
+              <form action="{% url 'logout' %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn border-0">
+                  <i class="bi bi-power me-1"></i> chiqish
+                </button>
+              </form>
+            </li>
+            {% else %}
+            <li class="nav-item ms-lg-2">
+              <a
+                class="btn-primary-custom d-inline-block text-decoration-none"
+                href="{% url 'register' %}"
+              >
+                <i class="bi bi-box-arrow-in-right me-1"></i> Kirish
+              </a>
+            </li>
+            {% endif %}
+          </ul>
         </div>
-    {% endif %}
+      </div>
+    </nav>
 
-    <article class="terminal-window">
-      <div class="terminal-header">
-        <div class="terminal-dots">
-          <div class="dot dot-1"></div>
-          <div class="dot dot-2"></div>
-          <div class="dot dot-3"></div>
+    <!-- Main Content -->
+    <main class="content-wrapper">
+      {% if messages %}
+      <div class="messages-container">
+        {% for message in messages %}
+        <div
+          class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm"
+          role="alert"
+        >
+          <div class="d-flex align-items-center">
+            {% if message.tags == 'success' %}
+            <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
+            {% else %}
+            <i
+              class="bi bi-exclamation-triangle-fill me-2 fs-5 text-danger"
+            ></i>
+            {% endif %} {{ message }}
+          </div>
+          <button
+            type="button"
+            class="btn-close shadow-none"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
         </div>
-        <div class="path-display">
-          <i class="bi bi-folder2-open"></i> working_dir: {{ request.path }}
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <article class="terminal-window">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <div class="dot dot-1"></div>
+            <div class="dot dot-2"></div>
+            <div class="dot dot-3"></div>
+          </div>
+          <div class="path-display">
+            <i class="bi bi-folder2-open me-1"></i> {{ request.path }}
+          </div>
+        </div>
+
+        <div class="terminal-body">
+          {% block content %}
+          <div class="py-4">
+            <h1 class="fw-bold mb-3 display-6">Xush kelibsiz!</h1>
+            <p class="text-muted fs-5">
+              Raqamli kutubxona tizimi orqali kitoblarni boshqarish, yuklab
+              olish va fondimiz bilan tanishish imkoniyatiga egasiz.
+            </p>
+            <div class="mt-4 pt-2">
+              <a
+                href="{% url 'category_list' %}"
+                class="btn-primary-custom text-decoration-none"
+              >
+                Kutubxonaga o'tish <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+            </div>
+          </div>
+          {% endblock %}
+        </div>
+      </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container text-center">
+        <div class="mb-3">
+          <span class="status-online">
+            <span class="status-dot"></span> System Online
+          </span>
+          <span class="mx-3 text-secondary opacity-50">|</span>
+          <code class="text-secondary small">v2.1.0-stable</code>
+        </div>
+        <div class="fw-medium">
+          &copy; <span id="year"></span> Digital Library System. All rights
+          reserved.
+        </div>
+        <div class="mt-2 text-secondary opacity-75">
+          Designed for professional researchers and students.
         </div>
       </div>
+    </footer>
 
-      <div class="terminal-body">
-        {% block content %}
-          <h1 class="h4 mb-3">Tizimga xush kelibsiz!</h1>
-          <p class="text-muted">Bu yerdan kitoblarni qidirishingiz, yuklab olishingiz yoki kutubxona fondini ko'rishingiz mumkin.</p>
-        {% endblock %}
-      </div>
-    </article>
-  </main>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
 
-  <footer class="footer">
-    <div class="container">
-      <div class="mb-1">
-        Tizim holati: <span class="status-online">online</span> |
-        Versiya: <span class="badge bg-light text-dark border">v2.0.4-stable</span>
-      </div>
-      <div>&copy; <span id="year"></span> Digital Library System. Barcha huquqlar himoyalangan.</div>
-    </div>
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Navbar mobil rejimda bosilganda avtomatik yopilishi uchun
-    const navLinks = document.querySelectorAll('.nav-link');
-    const menuToggle = document.getElementById('libNavbar');
-    const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle:false});
-    navLinks.forEach((l) => {
-        l.addEventListener('click', () => {
-            if(window.innerWidth < 992) { bsCollapse.hide(); }
-        });
-    });
-  </script>
-  {% block extra_scripts %}{% endblock %}
-</body>
+      // Navbar Scroll Effect
+      window.addEventListener('scroll', function () {
+        const nav = document.querySelector('.custom-nav');
+        if (window.scrollY > 20) {
+          nav.style.boxShadow = '0 10px 30px rgba(0,0,0,0.08)';
+        } else {
+          nav.style.boxShadow = 'none';
+        }
+      });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+  </body>
 </html>

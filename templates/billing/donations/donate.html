@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Kutubxonani qo'llab-quvvatlash | LibSystem{% endblock %}
+{% block title %}Kutubxonani qo'llab-quvvatlash | Digital-library{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -22,7 +22,7 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     }
 
-    .terminal-header {
+    .donate-terminal-line {
         font-family: var(--font-mono);
         color: var(--primary);
         font-size: 0.85rem;
@@ -190,8 +190,8 @@
 {% block content %}
 <div class="donate-wrapper">
     <div class="donate-card">
-        <div class="terminal-header">
-            <i class="bi bi-heart-fill"></i> sudo support --lib-system
+        <div class="donate-terminal-line">
+            <i class="bi bi-heart-fill"></i> sudo support --digital-library
         </div>
 
         <h1 class="title-main">Hissa qo‘shing</h1>
@@ -212,7 +212,7 @@
                 <span class="currency-label">so'm</span>
             </div>
             <button type="submit" class="btn-donate">
-                <i class="bi bi-rocket-takeoff-fill"></i> Hissa qo‘shish (Donate)
+                <i class="bi bi-rocket-takeoff-fill"></i> Hissa qo'shish
             </button>
         </form>
         <div class="total-badge">

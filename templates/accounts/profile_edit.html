@@ -1,5 +1,4 @@
-{% extends 'base.html' %} {% load static %} {% block title %}Engine Core |
-Profile Configuration{% endblock %} {% block extra_head %}
+{% extends 'base.html' %} {% load static %} {% block title %}Profilni tahrirlash | Digital-library{% endblock %} {% block extra_head %}
 <style>
   :root {
     --primary: #1a7f37;
@@ -29,7 +28,7 @@ Profile Configuration{% endblock %} {% block extra_head %}
     }
   }
 
-  .terminal-header {
+  .edit-terminal-header {
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--primary);
@@ -330,13 +329,16 @@ Profile Configuration{% endblock %} {% block extra_head %}
     .security-info {
       flex-direction: column;
     }
+    .action-panel {
+      flex-direction: column;
+    }
   }
 </style>
 {% endblock %} {% block content %}
 <div class="edit-container">
-  <div class="terminal-header">
+  <div class="edit-terminal-header">
     <span
-      ><i class="bi bi-terminal me-2"></i>libsystem_kernel.sh --mode=edit</span
+      ><i class="bi bi-terminal me-2"></i>digital-library_profile.sh --mode=edit</span
     >
     <span style="opacity: 0.5">STATUS: ENCRYPTED</span>
   </div>
@@ -363,7 +365,7 @@ Profile Configuration{% endblock %} {% block extra_head %}
       </div>
 
       <div class="upload-controls">
-        <label class="main-label">Visual Identity Processor</label>
+        <label class="main-label">Profil rasmi</label>
         <div class="mb-3">{{ form.avatar }}</div>
 
         {% if form.instance.avatar %}
@@ -385,23 +387,23 @@ Profile Configuration{% endblock %} {% block extra_head %}
     <!-- 2. DATA MATRIX -->
     <div class="form-matrix">
       <div class="field-box">
-        <label>System_First_Name</label>
+        <label>Ism</label>
         {{ form.first_name }}
       </div>
       <div class="field-box">
-        <label>System_Last_Name</label>
+        <label>Familiya</label>
         {{ form.last_name }}
       </div>
       <div class="field-box full-width">
-        <label>Bio_Encryption_Data</label>
+        <label>Biografiya</label>
         {{ form.bio }}
       </div>
       <div class="field-box">
-        <label>Comms_Protocol (Phone)</label>
+        <label>Telefon raqami</label>
         {{ form.phone_number }}
       </div>
       <div class="field-box">
-        <label>Origin_Date (Birth)</label>
+        <label>Tug'ilgan sana</label>
         {{ form.birth_date }}
       </div>
     </div>
@@ -409,9 +411,9 @@ Profile Configuration{% endblock %} {% block extra_head %}
     <!-- 3. ACTION DECK -->
     <div class="action-panel">
       <button type="submit" class="btn-execute">
-        <i class="bi bi-shield-check"></i> COMMIT_SYSTEM_UPDATE
+        <i class="bi bi-shield-check"></i> Saqlash
       </button>
-      <a href="{% url 'profile_view' %}" class="btn-abort"> ABORT </a>
+      <a href="{% url 'profile_view' %}" class="btn-abort"> Bekor qilish </a>
     </div>
   </form>
 
@@ -422,9 +424,9 @@ Profile Configuration{% endblock %} {% block extra_head %}
         <i class="bi bi-key-fill"></i>
       </div>
       <div>
-        <h4 class="m-0 fw-bold">Credential Upgrade</h4>
+        <h4 class="m-0 fw-bold">Xavfsizlik</h4>
         <p class="m-0 text-muted small" style="font-family: var(--font-mono)">
-          LAST_PASS_CHANGE: ENABLED
+          Parol va kirish ma'lumotlari
         </p>
       </div>
     </div>

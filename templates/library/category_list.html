@@ -1,22 +1,23 @@
 {% extends 'base.html' %}
 
-{% block title %}Kutubxona bo'limlari | LibSystem{% endblock %}
+{% block title %}Kutubxona bo'limlari | Digital-library{% endblock %}
 
 {% block extra_head %}
 <style>
     .search-wrapper {
         background: #f6f8fa;
         border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 20px;
+        border-radius: 12px;
+        padding: 25px;
         margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
 
-    .terminal-header {
+    .page-terminal-line {
         font-family: var(--font-mono);
         color: var(--primary);
-        font-size: 0.9rem;
-        margin-bottom: 15px;
+        font-size: 0.85rem;
+        margin-bottom: 20px;
         display: block;
     }
 
@@ -25,57 +26,75 @@
         position: relative;
         display: flex;
         gap: 10px;
+        flex-wrap: wrap;
     }
 
     .search-control {
         flex-grow: 1;
-        padding: 10px 15px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
+        min-width: 200px;
+        padding: 12px 15px;
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
         font-family: var(--font-mono);
-        transition: 0.2s;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        min-height: 44px;
+    }
+
+    .search-control:hover {
+        border-color: #d0d7de;
     }
 
     .search-control:focus {
         outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.1);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(26, 127, 55, 0.15);
     }
 
     /* Bo'lim kartochkalari */
     .category-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 20px;
+        margin-bottom: 40px;
     }
 
     .category-card {
         background: white;
         border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 20px;
+        border-radius: 12px;
+        padding: 25px;
         text-decoration: none;
         color: inherit;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        min-height: 200px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
 
     .category-card:hover {
-        border-color: var(--accent);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        transform: translateY(-2px);
+        border-color: var(--primary);
+        box-shadow: 0 12px 24px rgba(26, 127, 55, 0.1);
+        transform: translateY(-6px);
     }
 
     .category-name {
-        font-size: 1.15rem;
-        font-weight: 600;
-        color: var(--accent);
-        margin-bottom: 10px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 12px;
         display: flex;
         align-items: center;
         gap: 10px;
+    }
+
+    .category-card p {
+        font-size: 0.9rem;
+        color: #57606a;
+        margin: 0 0 15px 0;
+        line-height: 1.5;
     }
 
     .category-meta {
@@ -83,38 +102,129 @@
         color: #57606a;
         display: flex;
         align-items: center;
-        gap: 15px;
+        justify-content: space-between;
+        padding-top: 15px;
+        border-top: 1px solid #e5e7eb;
     }
 
     .stat-badge {
-        background: #f1f8ff;
-        color: #0550ae;
-        padding: 2px 8px;
-        border-radius: 12px;
+        background: rgba(26, 127, 55, 0.08);
+        color: var(--primary);
+        padding: 4px 10px;
+        border-radius: 16px;
         font-weight: 600;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
+    }
+
+    /* Tugmalar */
+    .btn {
+        min-height: 44px;
+        padding: 10px 16px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+        background: #1a6e31;
+        border-color: #1a6e31;
+    }
+
+    .btn-outline-danger {
+        border-color: #d0d7de;
+        color: var(--text);
+    }
+
+    .btn-outline-danger:hover {
+        background: #f6f8fa;
+        border-color: #d0d7de;
     }
 
     /* Pagination */
+    .pagination {
+        margin-top: 40px;
+    }
+
     .pagination .page-link {
         color: var(--text);
         border: 1px solid var(--border);
         font-family: var(--font-mono);
-        margin: 0 3px;
+        margin: 0 4px;
         border-radius: 6px;
+        min-height: 40px;
+        padding: 8px 12px;
     }
 
     .pagination .page-item.active .page-link {
-        background-color: var(--accent);
-        border-color: var(--accent);
+        background-color: var(--primary);
+        border-color: var(--primary);
     }
 
     .empty-state {
         text-align: center;
-        padding: 50px;
+        padding: 60px 20px;
         border: 2px dashed var(--border);
         border-radius: 12px;
         background: #fcfcfc;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #d0d7de;
+        margin-bottom: 15px;
+    }
+
+    .empty-state h4 {
+        color: var(--text-main);
+        margin: 15px 0 10px 0;
+    }
+
+    .empty-state p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+    }
+
+    @media (max-width: 768px) {
+        .search-wrapper {
+            padding: 20px 15px;
+        }
+
+        .search-input-group {
+            flex-direction: column;
+        }
+
+        .search-control {
+            min-width: 100%;
+        }
+
+        .category-grid {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .category-card {
+            padding: 20px;
+            min-height: 180px;
+        }
+
+        .category-name {
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .category-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-terminal-line {
+            font-size: 0.8rem;
+        }
     }
 </style>
 {% endblock %}
@@ -124,7 +234,7 @@
 
     <!-- Qidiruv va Sarlavha -->
     <div class="search-wrapper shadow-sm">
-        <span class="terminal-header">user@lib:~$ ls --dirs /categories/</span>
+        <span class="page-terminal-line">user@digital-library:~$ ls --dirs /categories/</span>
         <div class="row align-items-center">
             <div class="col-lg-5 mb-3 mb-lg-0">
                 <h2 class="h3 fw-bold mb-0">Kutubxona bo'limlari</h2>
@@ -205,6 +315,7 @@
             <li class="page-item active">
                 <span class="page-link shadow-sm">
                     {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                </span>
                 </li>
 
             {% if page_obj.has_next %}
